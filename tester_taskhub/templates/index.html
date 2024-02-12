@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>TaskHub</h1>
+    </header>
+    <div class="login-options">
+        <button class="login-button" onclick="showLoginForm('returning')">Returning User</button>
+        <button class="login-button" onclick="showLoginForm('new')">New User</button>
+    </div>
+
+    <form class="login-form" id="returningForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <button class="login-button" type="submit">Login</button>
+    </form>
+
+    <form class="login-form" id="newForm">
+        <label for="newUsername">New Username:</label>
+        <input type="text" id="newUsername" name="newUsername" required>
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" name="newPassword" required>
+        <button class="login-button" type="submit">Sign Up</button>
+    </form>
+
+    <script>
+        function showLoginForm(type) {
+            const returningForm = document.getElementById('returningForm');
+            const newForm = document.getElementById('newForm');
+
+            if (type === 'returning') {
+                returningForm.style.display = 'flex';
+                newForm.style.display = 'none';
+            } else if (type === 'new') {
+                returningForm.style.display = 'none';
+                newForm.style.display = 'flex';
+            }
+        }
+    </script>
+</body>
+</html>

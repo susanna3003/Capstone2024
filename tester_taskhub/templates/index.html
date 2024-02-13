@@ -10,6 +10,9 @@
     <header>
         <h1>TaskHub</h1>
     </header>
+
+    <p></p>
+
     <div class="login-options">
         <button class="login-button" onclick="showLoginForm('returning')">Returning User</button>
         <button class="login-button" onclick="showLoginForm('new')">New User</button>
@@ -24,10 +27,21 @@
     </form>
 
     <form class="login-form" id="newForm">
-        <label for="newUsername">New Username:</label>
+        <label for="newFname">First Name (required):</label>
+        <input type="text" id="newFname" name="newFname" required>
+
+        <label for="newLname">Last Name (required):</label>
+        <input type="text" id="newLname" name="newLname" required>
+
+        <label for="newEmail">Email (required):</label>
+        <input type="text" id="newEmail" name="newEmail" required>
+
+        <label for="newUsername">Username (required):</label>
         <input type="text" id="newUsername" name="newUsername" required>
-        <label for="newPassword">New Password:</label>
+
+        <label for="newPassword">Password (required):</label>
         <input type="password" id="newPassword" name="newPassword" required>
+        
         <button class="login-button" type="submit">Sign Up</button>
     </form>
 

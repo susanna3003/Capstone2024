@@ -1,0 +1,25 @@
+{% extends "theme.html" %} {% block title %} Applications: Calculatron {% endblock %}
+
+{% block content %} 
+<h1> What are we playing today?</h1>
+<p>Calculatron comes equipped with many mathematical applications that are easy to use for learners young and old!</p>
+<div class="container">
+    <div class="row">
+      <div class="col-sm">
+        <a href="/calculatorApp"><img src="../static/calculatron_icon.jpg" alt="calculator" style="width:400px;height:500;" /></a>
+        <a href="/calculatorApp"> <h2>Standard Calculator</h2> </a>
+        <p>A simple calculator with a clear easy-to-read display, which should help with those not-so-easy-to-do maths problems.</p>
+      </div>
+      <div class="col-sm">
+        <a href="/randMathApp"><img src="../static/numberAttack.png" alt="Number Attack" style="width:400px;height:500;" /></a>
+        <a href="/randMathApp"><h2>Number Attack! (Randomized Math Equations)</h2> </a>
+        <p>Test your mathematical skills with randomized equations!</p>
+      </div>
+      <div class="col-sm">
+        <a href="/memBankApp"><img src="../static/memoryBank.png" alt="membry Bank" style="width:400px;height:500;" /></a>
+        <a href="/memBankApp"><h2>Test your friends! (Equation Memory Bank)</h2> </a>
+        <p>Enter your own math equations and test your friend's mathematical skills.</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

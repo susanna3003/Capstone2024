@@ -1,0 +1,20 @@
+{% extends "theme.html" %} {% block title %} Applications: Calculatron {% endblock %}
+
+{% block content %} 
+<h1>memory bank Display</h1>
+<ul>
+    {% for equation in equations %}
+        <li>{{ equation }}</li>
+    {% endfor %}
+</ul>
+
+<a href="/memBankApp">Back to Calculator</a>
+<button type="button" name="clear" onclick="clearEquations()">Clear List</button>
+{% endblock %}
+
+<script>
+    function clearEquations() 
+    {
+        equations = [];
+    }
+</script>

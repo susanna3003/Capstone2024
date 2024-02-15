@@ -1,0 +1,46 @@
+{% extends "theme.html" %} {% block title %} Applications: Calculatron {% endblock %}
+
+{% block content %} 
+<h1>Calculator</h1>
+    <form method="POST" id="calculator-form">
+        <input type="text" name="expression" id="expression" placeholder="Enter an expression" required>
+        <br>
+        <button type="button" class="calculator-button" onclick="appendToExpression('1')">1</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('2')">2</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('3')">3</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('+')">+</button>
+        <br>
+        <button type="button" class="calculator-button" onclick="appendToExpression('4')">4</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('5')">5</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('6')">6</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('-')">-</button>
+        <br>
+        <button type="button" class="calculator-button" onclick="appendToExpression('7')">7</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('8')">8</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('9')">9</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('*')">*</button>
+        <br>
+        <button type="button" class="calculator-button" onclick="appendToExpression('0')">0</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('.')">.</button>
+        <button type="button" class="calculator-button" onclick="clearExpression()">C</button>
+        <button type="button" class="calculator-button" onclick="appendToExpression('/')">/</button>
+        <br>
+        <button type="submit" class="calculator-button" style="width: 202px;">Calculate</button>
+    </form>
+    <div class="card border-primary mb-3" style="max-width: 20rem align-items-center;">
+        <div class="card-header">Answer</div>
+        <div class="card-body">
+            <p>{{ result }}</p>
+        </div>
+    </div>
+    
+    <script>
+        function appendToExpression(value) {
+            document.getElementById('expression').value += value;
+        }
+
+        function clearExpression() {
+            document.getElementById('expression').value = '';
+        }
+    </script>
+{% endblock %}

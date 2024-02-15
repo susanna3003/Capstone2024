@@ -1,0 +1,16 @@
+{% extends "theme.html" %} {% block title %} Applications: Calculatron {% endblock %}
+{% block content %} 
+<body>
+    <h1>Result</h1>
+    {% if result == "Correct!" %}
+        <img src="../static/Correct.gif" alt="Correct!">
+        <br></br>
+    {% else %}
+        <img src="../static/Incorrect.gif" alt="Incorrect. Try again.">
+        <br></br>
+        <p>Your Answer: {{ user_answer }}</p>
+        <p>Correct Answer: {{ correct_answer }}</p>
+    {% endif %}
+    <a href="/randMathApp"><button type="submit" class="calculator-button" style="width: 202px;">Try Another Equation</button></a>
+</body>
+{% endblock %}

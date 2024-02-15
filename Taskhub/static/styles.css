@@ -92,6 +92,8 @@ img
 {
   display: none;
   flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto;
   gap: 10px;
   text-align: center;
   color: #dadada

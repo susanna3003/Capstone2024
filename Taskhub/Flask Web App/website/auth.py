@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash
-import sqlite3
+import sqlite3, re
 
 auth = Blueprint('auth', __name__)
 
@@ -32,25 +32,32 @@ def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
         firstName = request.form.get('firstName')
+        lastName = request.form.get('lastName')
         password = request.form.get('password')
         passwordCon = request.form.get('passwordCon')
-
+        username = request.form.get('username')
+        phoneNum = request.form.get('phoneNum')
+        
         # String input validations
         if len(email) < 4:
             flash('Email must be greater than 3 characters!', category='error')
         elif len(firstName) < 2:
             flash('First Name must be greater than 1 character!', category='error')
+        elif len(lastName) < 2:
+            flash('Last Name must be greater than 1 character!', category='error')
         elif password != passwordCon:
             flash('Passwords don\'t match!', category='error')
-        elif len(password) < 7:
-            flash('Password must be at least 7 characters', category='error')
+        elif len(password) < 12:
+            flash('Password must be at least 12 characters', category='error')
+        elif not re.match(r'^\d{3}-\d{3}-\d{4}$', phoneNum):
+            flash('Phone number must be in the format XXX-XXX-XXXX', category='error')
         else:
             # Connect to the database
             conn = sqlite3.connect('userDatabase.db')
             cur = conn.cursor()
 
             # Insert the user information into the database
-            cur.execute("INSERT INTO users (firstname, email, userPass) VALUES (?, ?, ?)", (firstName, email, password))
+            cur.execute("INSERT INTO users (firstname, lastName, email, userPass, username, phoneNum) VALUES (?, ?, ?, ?, ?, ?)", (firstName, lastName, email, password, username, phoneNum))
 
             # Commit the changes and close the connection
             conn.commit()
@@ -63,3 +70,8 @@ def sign_up():
 @auth.route('/about')
 def about():
     return render_template("about.html")
+
+# user Page
+@auth.route('/userPage.html')
+def userPage():
+     return render_template("userPage.html")

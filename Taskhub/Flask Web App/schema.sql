@@ -3,6 +3,9 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     firstname VARCHAR(15) NOT NULL,
+    lastname VARCHAR(15) NOT NULL,
     email VARCHAR(30) NOT NULL,
-    userPass VARCHAR(7) NOT NULL
+    userPass VARCHAR(12) NOT NULL,
+    username VARCHAR(12) NOT NULL,
+    phoneNum VARCHAR(15) NOT NULL
 );

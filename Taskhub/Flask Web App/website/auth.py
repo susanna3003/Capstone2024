@@ -1,9 +1,8 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, session, render_template, request, flash, redirect, url_for
 import sqlite3, re
 
 auth = Blueprint('auth', __name__)
 
-equations = [] # Creating equation array
 # Login Page
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -22,8 +21,9 @@ def login():
                 flash('Incorrect password. Please try again.', 'error')
         else:
                 flash('Logged in successfully!', 'success')
-                render_template("home.html")
-        conn.close()
+                conn.close()
+                session['logged_in'] = True  # Set session variable to indicate user is logged in
+                return redirect(url_for("auth.userPage")) # Upon successful login, redirect user to userPage
     return render_template("login.html")
 
 #SignUp page
@@ -62,8 +62,9 @@ def sign_up():
             # Commit the changes and close the connection
             conn.commit()
             conn.close()
-
             flash('Account created!', category='success')
+            session['logged_in'] = True  # Set session variable to indicate user is logged in
+            return redirect(url_for("auth.userPage")) # Upon signing up, redirect user to userPage
     return render_template("signUp.html")
 
 # About Page
@@ -72,6 +73,12 @@ def about():
     return render_template("about.html")
 
 # user Page
-@auth.route('/userPage.html')
+@auth.route('/userPage')
 def userPage():
      return render_template("userPage.html")
+
+# Logout route
+@auth.route('/logout')
+def logout():
+    session.pop('logged_in', None)  # Clear the session variable
+    return redirect(url_for('auth.login'))  # Redirect to the login page after logout

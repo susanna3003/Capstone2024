@@ -39,17 +39,22 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/signUp">Signup</a>
-                </li>
+				{% if session.get('logged_in') %}
+					<li class="nav-item">
+						<a class="nav-link" href="/logout">Logout</a>
+					</li>
+				{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="/login">Login</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/signUp">Signup</a>
+					</li>
+				{% endif %}
             </ul>
         </div>
     </div>
 </nav>
-
 
 	<!-- Flash Messages -->
 	{% with messages = get_flashed_messages(with_categories=true)%}
@@ -88,7 +93,6 @@
 		<ul class="nav col-md-4 justify-content-end">
 			<li class="nav-item"><a href="/" class="nav-link px-2 text-body-secondary">Home</a></li>
 			<li class="nav-item"><a href="/about" class="nav-link px-2 text-body-secondary">About</a></li>
-			<li class="nav-item"><a href="/signUp" class="nav-link px-2 text-body-secondary">Sign Up</a></li>
 		</ul>
 		</footer>
 	</div>

@@ -1,0 +1,53 @@
+
+{% extends "theme.html" %} {% block title %} Calendar: Taskhub {% endblock %}
+{% block content %} 
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script> <!-- Calendar Script -->
+    <div class="login-options">
+        <button class="login-button" onclick="showLoginForm('calendar')">Calendar</button>
+        <button class="login-button" onclick="showLoginForm('reminder')">Reminders</button>
+        <button class="login-button" onclick="showLoginForm('complete')">Completed Tasks</button>
+    </div>
+
+    <form class="login-form" id="calendarForm" style="display: none;">
+        <div id="calendar"></div>
+    </form>
+
+    <form class="login-form" id="reminderForm" style="display: none;">
+        <p>Reminders</p>
+    </form>
+
+    <form class="login-form" id="completeForm" style="display: none;">
+        <p>Completed Tasks</p>
+    </form>
+
+    <script>
+        function showLoginForm(type) {
+            const calendarForm = document.getElementById('calendarForm');
+            const reminderForm = document.getElementById('reminderForm');
+            const completeForm = document.getElementById('completeForm');
+
+            if (type === 'calendar') {
+                calendarForm.style.display = 'flex';
+                reminderForm.style.display = 'none';
+                completeForm.style.display = 'none';
+            } else if (type === 'reminder') {
+                calendarForm.style.display = 'none';
+                reminderForm.style.display = 'flex';
+                completeForm.style.display = 'none';
+            } else if (type === 'complete') {
+                calendarForm.style.display = 'none';
+                reminderForm.style.display = 'none';
+                completeForm.style.display = 'flex';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: '800px',
+                aspectRatio: 2
+        });
+        calendar.render();
+      });
+    </script>
+{% endblock %}

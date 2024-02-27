@@ -82,3 +82,8 @@ def userPage():
 def logout():
     session.pop('logged_in', None)  # Clear the session variable
     return redirect(url_for('auth.login'))  # Redirect to the login page after logout
+
+# Calendar Route
+@auth.route('/calendar')
+def calendar():
+    return render_template("calendar.html")

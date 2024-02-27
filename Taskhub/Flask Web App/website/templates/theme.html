@@ -6,21 +6,15 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../static/css/Cerulean/bootstrap.min.css">
-    <!-- Global Site Tag (gtag.js) - Google Analytics -->
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KGDJBEFF3W"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-KGDJBEFF3W');
-    </script><meta http-equiv="origin-trial" content="AymqwRC7u88Y4JPvfIF2F37QKylC04248hLCdJAsh8xgOfe/dVJPV3XS3wLFca1ZMVOtnBfVjaCMTVudWM//5g4AAAB7eyJvcmlnaW4iOiJodHRwczovL3d3dy5nb29nbGV0YWdtYW5hZ2VyLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjk1MTY3OTk5LCJpc1RoaXJkUGFydHkiOnRydWV9">
+	<!-- Bootstrap JavaScript and jQuery (Mobile) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
 	<!-- header -->
 	<Header class="text-center">
-		<a href="/"> <img src="../static/TaskhubLogo.png" alt="Taskhub Logo" /> </a><!-- Logo goes back to home page upon click -->
+		<a href="/"> <img src="../static/TaskhubLogo.png" alt="Taskhub Logo" class="img-fluid" /> </a><!-- Logo goes back to home page upon click -->
 	</Header>
 
 	<!-- Navbar -->
@@ -40,9 +34,12 @@
                     <a class="nav-link" href="/about">About</a>
                 </li>
 				{% if session.get('logged_in') %}
-				<li class="nav-item">
-					<a class="nav-link" href="/userPage">User Page</a>
-				</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/calendar">Calendar</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/userPage">User Page</a>
+					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/logout">Logout</a>
 					</li>

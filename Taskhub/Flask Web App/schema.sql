@@ -1,11 +1,12 @@
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     firstname VARCHAR(15) NOT NULL,
     lastname VARCHAR(15) NOT NULL,
     email VARCHAR(30) NOT NULL,
     userPass VARCHAR(12) NOT NULL,
     username VARCHAR(12) NOT NULL,
-    phoneNum VARCHAR(15) NOT NULL
+    phoneNum VARCHAR(15) NOT NULL,
+    accountType VARCHAR(15)
 );

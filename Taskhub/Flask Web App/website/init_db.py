@@ -5,6 +5,6 @@ with open('schema.sql') as f:
         connection.executescript(f.read())
 cur = connection.cursor()
 
-cur.execute("INSERT INTO users (id, firstname, lastname, email, userPass, username, phoneNum) VALUES ('id', 'firstname', 'lastname', 'email', 'userPass', 'username', 'phoneNum')")
+cur.execute("INSERT INTO users (id, firstname, lastname, email, userPass, username, phoneNum) VALUES ('id', 'firstname', 'lastname', 'email', 'userPass', 'username', 'phoneNum', 'accountType)")
 connection.commit()
 connection.close()

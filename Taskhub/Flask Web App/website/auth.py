@@ -1,4 +1,4 @@
-from flask import Blueprint, session, render_template, request, flash, redirect, url_for
+from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for
 import sqlite3, re
 
 auth = Blueprint('auth', __name__)
@@ -21,9 +21,10 @@ def login():
                 flash('Incorrect password. Please try again.', 'error')
         else:
                 flash('Logged in successfully!', 'success')
+                session['logged_in'] = True
+                session['id'] = user[0]
                 conn.close()
-                session['logged_in'] = True  # Set session variable to indicate user is logged in
-                return redirect(url_for("auth.userPage")) # Upon successful login, redirect user to userPage
+                return redirect(url_for("auth.userPage"))
     return render_template("login.html")
 
 #SignUp page
@@ -37,6 +38,7 @@ def sign_up():
         passwordCon = request.form.get('passwordCon')
         username = request.form.get('username')
         phoneNum = request.form.get('phoneNum')
+        accountType = request.form.get('selectedAccountType')
         
         # String input validations
         if len(email) < 4:
@@ -52,19 +54,23 @@ def sign_up():
         elif not re.match(r'^\d{3}-\d{3}-\d{4}$', phoneNum):
             flash('Phone number must be in the format XXX-XXX-XXXX', category='error')
         else:
+
             # Connect to the database
             conn = sqlite3.connect('userDatabase.db')
             cur = conn.cursor()
 
             # Insert the user information into the database
-            cur.execute("INSERT INTO users (firstname, lastName, email, userPass, username, phoneNum) VALUES (?, ?, ?, ?, ?, ?)", (firstName, lastName, email, password, username, phoneNum))
+            cur.execute("INSERT INTO users (firstname, lastName, email, userPass, username, phoneNum, accountType) VALUES (?, ?, ?, ?, ?, ?, ?)", (firstName, lastName, email, password, username, phoneNum, accountType))
+            user_id = cur.lastrowid  # Get the ID of the inserted user
+            session['id'] = user_id
 
             # Commit the changes and close the connection
             conn.commit()
-            conn.close()
             flash('Account created!', category='success')
-            session['logged_in'] = True  # Set session variable to indicate user is logged in
-            return redirect(url_for("auth.userPage")) # Upon signing up, redirect user to userPage
+            session['logged_in'] = True
+            session['show_account_type_popup'] = True
+            conn.close()
+            return redirect(url_for("auth.userPage"))
     return render_template("signUp.html")
 
 # About Page
@@ -75,7 +81,31 @@ def about():
 # user Page
 @auth.route('/userPage')
 def userPage():
-     return render_template("userPage.html")
+    # Check if the user's account type is set
+    user_id = session.get('id')
+    conn = sqlite3.connect('userDatabase.db')
+    cur = conn.cursor()
+    cur.execute("SELECT accountType FROM users WHERE id = ?", (user_id,))
+    conn.close()
+    show_account_type_popup = session.get('show_account_type_popup', False)
+    return render_template("userPage.html", show_account_type_popup=show_account_type_popup)
+
+# account type Route
+@auth.route('/save_account_type', methods=['POST'])
+def save_account_type():
+    # Retrieve the selected account type from the form
+    accountType = request.form.get('accountType')
+
+    # Get the user's ID
+    user_id = session.get('id')
+
+    # Connect to the database
+    conn = sqlite3.connect('userDatabase.db')
+    cur = conn.cursor()
+    cur.execute("UPDATE users SET accountType = ? WHERE id = ?", (accountType, user_id))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('auth.userPage'))
 
 # Logout route
 @auth.route('/logout')

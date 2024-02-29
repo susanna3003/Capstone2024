@@ -86,9 +86,12 @@ def userPage():
     conn = sqlite3.connect('userDatabase.db')
     cur = conn.cursor()
     cur.execute("SELECT accountType FROM users WHERE id = ?", (user_id,))
+    cur.execute("SELECT username FROM users WHERE id = ?", (user_id,))
+    user_data = cur.fetchone()
+    username = user_data[0] if user_data else "User"
     conn.close()
     show_account_type_popup = session.get('show_account_type_popup', False)
-    return render_template("userPage.html", show_account_type_popup=show_account_type_popup)
+    return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username=username)
 
 # account type Route
 @auth.route('/save_account_type', methods=['POST'])
@@ -105,6 +108,7 @@ def save_account_type():
     cur.execute("UPDATE users SET accountType = ? WHERE id = ?", (accountType, user_id))
     conn.commit()
     conn.close()
+    session['show_account_type_popup'] = False
     return redirect(url_for('auth.userPage'))
 
 # Logout route

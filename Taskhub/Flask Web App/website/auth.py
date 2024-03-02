@@ -1,3 +1,4 @@
+import uuid
 from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for
 import sqlite3, re
 
@@ -93,7 +94,7 @@ def userPage():
     show_account_type_popup = session.get('show_account_type_popup', False)
     return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username=username)
 
-# account type Route
+# account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])
 def save_account_type():
     # Retrieve the selected account type from the form
@@ -107,9 +108,32 @@ def save_account_type():
     cur = conn.cursor()
     cur.execute("UPDATE users SET accountType = ? WHERE id = ?", (accountType, user_id))
     conn.commit()
+
+    # Linking user account type to specific database
+    if accountType == 'teacher':
+        cur.execute("INSERT INTO Teacher (id, teacher_id) VALUES (?, ?)", (user_id, generate_unique_teacher_id()))
+    elif accountType == 'parent':
+        cur.execute("INSERT INTO Parent (id, parent_id) VALUES (?, ?)", (user_id, generate_unique_parent_id()))
+    elif accountType == 'student':
+        cur.execute("INSERT INTO Student (id, student_id) VALUES (?, ?)", (user_id, generate_unique_student_id()))
+    conn.commit()
     conn.close()
-    session['show_account_type_popup'] = False
+    session['show_account_type_popup'] = False # Prevents pop up loop
     return redirect(url_for('auth.userPage'))
+
+# Generating unique ID for account type
+def generate_unique_teacher_id():
+    # Generate a unique ID for the teacher
+    teacher_id = str(uuid.uuid4())
+    return teacher_id
+def generate_unique_parent_id():
+    # Generate a unique ID for the teacher
+    teacher_id = str(uuid.uuid4())
+    return teacher_id
+def generate_unique_student_id():
+    # Generate a unique ID for the teacher
+    teacher_id = str(uuid.uuid4())
+    return teacher_id
 
 # Logout route
 @auth.route('/logout')

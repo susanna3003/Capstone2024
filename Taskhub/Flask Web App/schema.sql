@@ -10,3 +10,26 @@ CREATE TABLE users (
     phoneNum VARCHAR(15) NOT NULL,
     accountType VARCHAR(15)
 );
+
+CREATE TABLE Teacher (
+    userId INTEGER PRIMARY KEY,
+    teacherId INTEGER UNIQUE,
+    subjectsTaught TEXT,
+    qualifications TEXT,
+    FOREIGN KEY (userId) REFERENCES User(id)
+);
+
+CREATE TABLE Parent (
+    userId INTEGER PRIMARY KEY,
+    parentId INTEGER UNIQUE,
+    childrenInfo TEXT,
+    FOREIGN KEY (userId) REFERENCES User(id)
+);
+
+CREATE TABLE Student (
+    userId INTEGER PRIMARY KEY,
+    studentId INTEGER UNIQUE,
+    gradeLevel TEXT,
+    coursesEnrolled TEXT,
+    FOREIGN KEY (userId) REFERENCES User(id)
+);

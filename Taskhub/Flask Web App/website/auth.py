@@ -111,11 +111,11 @@ def save_account_type():
 
     # Linking user account type to specific database
     if accountType == 'teacher':
-        cur.execute("INSERT INTO Teacher (id, teacher_id) VALUES (?, ?)", (user_id, generate_unique_teacher_id()))
+        cur.execute("INSERT INTO Teacher (userId, teacherId) VALUES (?, ?)", (user_id, generate_unique_teacher_id()))
     elif accountType == 'parent':
-        cur.execute("INSERT INTO Parent (id, parent_id) VALUES (?, ?)", (user_id, generate_unique_parent_id()))
+        cur.execute("INSERT INTO Parent (userId, parentId) VALUES (?, ?)", (user_id, generate_unique_parent_id()))
     elif accountType == 'student':
-        cur.execute("INSERT INTO Student (id, student_id) VALUES (?, ?)", (user_id, generate_unique_student_id()))
+        cur.execute("INSERT INTO Student (userId, studentId) VALUES (?, ?)", (user_id, generate_unique_student_id()))
     conn.commit()
     conn.close()
     session['show_account_type_popup'] = False # Prevents pop up loop
@@ -124,16 +124,16 @@ def save_account_type():
 # Generating unique ID for account type
 def generate_unique_teacher_id():
     # Generate a unique ID for the teacher
-    teacher_id = str(uuid.uuid4())
-    return teacher_id
+    teacherId = str(uuid.uuid4())
+    return teacherId
 def generate_unique_parent_id():
     # Generate a unique ID for the teacher
-    teacher_id = str(uuid.uuid4())
-    return teacher_id
+    parentId = str(uuid.uuid4())
+    return parentId
 def generate_unique_student_id():
     # Generate a unique ID for the teacher
-    teacher_id = str(uuid.uuid4())
-    return teacher_id
+    studentId = str(uuid.uuid4())
+    return studentId
 
 # Logout route
 @auth.route('/logout')

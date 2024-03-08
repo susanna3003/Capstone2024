@@ -1,0 +1,1 @@
+This folder will hold all potential and useful images for this project.

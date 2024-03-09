@@ -1,28 +1,91 @@
 {% extends "theme.html" %} {% block title %} Home: Taskhub {% endblock %}
 
 {% block content %} 
+<style>
+  /* Basic styling */
+  body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+  }
+  .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+  }
+  .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+  }
+  .col {
+      flex: 1;
+      padding: 20px;
+  }
+  .left {
+      text-align: justify;
+  }
+  .right img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+  }
+</style>
 
+<!----Introduction-------->
 <h1>Welcome to Taskhub</h1>
-<p>Welcome to Taskhub, your go-to task management system designed to streamline productivity and organization for Parents, Teachers, Students, and users alike.</p>
-<p>At Taskhub, we understand the challenges of managing multiple tasks and responsibilities in today's fast-paced world. Whether you're a parent juggling household chores, a teacher coordinating class schedules, a student managing assignments, or a user seeking efficient task management, Taskhub is here to simplify your life.</p>
-<h2>Features tailored for every user:</h2>
-<ul>
-  <li><strong>Parents:</strong> Stay on top of your family's schedule effortlessly. Taskhub allows you to create and assign tasks to family members, set reminders, and track progress to ensure everyone stays organized and productive.</li>
-  <li><strong>Teachers:</strong> Simplify classroom management with Taskhub. Track lesson plans, organize class schedules, and monitor student progress all from one centralized platform. Taskhub empowers teachers to streamline communication and collaboration with students and parents.</li>
-  <li><strong>Students:</strong> Take control of your academic journey with Taskhub. Keep track of assignments, deadlines, and study schedules, set reminders for important tasks, and collaborate with classmates on group projects. Taskhub helps students stay focused and achieve their academic goals.</li>
-  <li><strong>Default Users:</strong> Taskhub is designed for everyone who values efficiency and organization. Whether you're managing personal tasks, work projects, or group activities, Taskhub provides a user-friendly interface and powerful features to enhance productivity and ensure tasks are completed on time.</li>
-</ul>
-<h2>Our Mission:</h2>
-<p>At Taskhub, our mission is to empower individuals and teams to manage tasks effectively, saving time and reducing stress. We are committed to providing a seamless task management experience for Parents, Teachers, Students, and users from all walks of life.</p>
+<h2>Welcome to Taskhub, your go-to task management system designed to streamline 
+  productivity and organization for all hardworking individuals!</h2>
+<p>At Lucky Foot, we understand the challenges of managing multiple tasks and responsibilities in today's 
+  fast-paced world. Whether you're a parent juggling household chores, a teacher coordinating class 
+  schedules, a student managing assignments, or just a person seeking efficient task management, Taskhub 
+  is here to simplify your busy workschedule!</p>
+
+<!----Section 1-------->
 <h2>Why Taskhub?</h2>
-<ul>
-  <li><strong>User-Friendly Interface:</strong> Taskhub offers an intuitive and user-friendly interface, making task management effortless for users of all ages and technical backgrounds.</li>
-  <li><strong>Customizable Features:</strong> Tailor Taskhub to suit your specific needs with customizable features such as task types, priority levels, and reminders.</li>
-  <li><strong>Seamless Collaboration:</strong> Foster collaboration and communication among family members, classmates, or team members with Taskhub's sharing and commenting features.</li>
-  <li><strong>Cross-Platform Accessibility:</strong> Access Taskhub anytime, anywhere, from any device. Whether you're at home, in the classroom, or on the go, Taskhub syncs seamlessly across all your devices.</li>
-</ul>
-<p><strong>Get Started with Taskhub Today:</strong> Join thousands of users who rely on Taskhub to streamline their task management and boost productivity. Sign up for Taskhub today and take control of your tasks with ease.</p>
-</body>
-</html>
+<p>With Taskhub, customization is key. Tailor the platform to your exact preferences and needs 
+  with customizable features such as task types, priority levels, and reminders. Take control of 
+  your tasks like never before, ensuring that your workflow aligns perfectly with your unique style 
+  and requirements.
+</p>
+
+<!----Section 2--------> 
+<h2>Features Tailored for Every User!</h2>
+<div class="container">
+  <div class="row">
+      <div class="col left">
+          <p>Whether you're coordinating with family members, collaborating with classmates on a 
+            group project, or managing tasks with your team at work, Taskhub makes collaboration a 
+            breeze. Share tasks, exchange comments, and stay connected with your team every step of the 
+            way.</p>
+        </div>
+      <div class="col right">
+          <img src="../static/Mockup.png" alt="Image">
+      </div>
+  </div>
+</div>
+
+<!----Section 3-------->
+<h2>Recieve Weekly Checkins and Reviews from Lucky!</h2>
+  <div class="container">
+    <div class="row">
+        <div class="col left">
+          <p>As you Taskhub grows, your personal assistant, "Lucky", will be there with you every step of the way
+            reminding you of upcoming tasks and sharing words of encouragement for your more tougher tasks.
+          </p>
+        </div>
+        <div class="col right">
+            <img src="../static/LuckyReview.png" alt="Lucky reminder">
+        </div>
+    </div>
+  </div>
+   
+
+<!-----Sign up hook----->
+<h2>With Taskhub, task management has never 
+  been easier or more efficient. Join the countless individuals and teams already experiencing the 
+  benefits of Taskhub and take control of your tasks today!</h2>
+  <button type="button" class="btn btn-primary btn-lg"><strong>Sign Up!</strong></button>
 
 {% endblock %}

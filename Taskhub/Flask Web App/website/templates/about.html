@@ -1,15 +1,69 @@
-{% extends "theme.html" %} {% block title %} About: Taskhub {% endblock %}
+{% extends "theme.html" %}
+{% block title %} About: Taskhub {% endblock %}
 
 {% block content %} 
-<h1>The creators of Taskhub</h1>
+<style>
+    .contributors {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .contributors li {
+        margin-right: 20px;
+        margin-bottom: 20px;
+    }
+    .contributor {
+        display: flex;
+        align-items: center;
+    }
+    .contributor img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-right: 20px;
+    }
+</style>
 
-<p>Taskhub could not have been brought to life all on its own. Meet the contributors who made Taskhub the helpful task manager it is today.</p>
-<ul>
-    <li><strong>Kent Jones - </strong>Back-end</li>
-    <li><strong>Gina Jordan - </strong>Back-end</li>
-    <li><strong>Susanna Quayle - </strong>Back-end</li>
-    <br>
-    <li><strong>Ashley Jackson - </strong>Front-end</li>
-    <li><strong>Kelly Bullard - </strong>Front-end</li>
+<h1>The creators of Taskhub</h1>
+<h3>Taskhub could not have been brought to life all on its own. 
+    Meet the contributors who made Taskhub the helpful task manager it is today.</h3>
+<ul class="contributors">
+    <li>
+        <div class="contributor">
+            <img src="../static/placeholder.png" alt="Kent Jones">
+            <strong>Kent Jones Jr</strong> - Web Developer
+        </div>
+    </li>
+    <li>
+        <div class="contributor">
+            <img src="../static/placeholder.png" alt="Gina Jordan">
+            <strong>Gina Jordan</strong> - Web Developer
+        </div>
+    </li>
+    <li>
+        <div class="contributor">
+            <img src="../static/placeholder.png" alt="Susanna Quayle">
+            <strong>Susanna Quayle</strong> - Web Developer
+        </div>
+    </li>
+    <li>
+        <div class="contributor">
+            <img src="../static/placeholder.png" alt="Ashley Jackson">
+            <strong>Ashley Jackson</strong> - President of Lucky Foot
+        </div>
+    </li>
+    <li>
+        <div class="contributor">
+            <img src="../static/placeholder.png" alt="Kelly Bullard">
+            <strong>Kelly Bullard</strong> - Designer
+        </div>
+    </li>
 </ul>
+
+<h2>Our Mission</h2>
+<p>At Taskhub, our mission is to empower individuals and teams to manage tasks effectively, saving 
+    time and reducing stress. We are committed to providing a seamless task management 
+    experience for users from all walks of life.</p>
 {% endblock %}

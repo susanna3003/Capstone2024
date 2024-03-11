@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management System</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #taskList {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .task button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task Management System</h1>
+    <form id="taskForm">
+        <label for="taskName">Task Name:</label><br>
+        <input type="text" id="taskName" name="taskName"><br>
+        <label for="taskDescription">Task Description:</label><br>
+        <textarea id="taskDescription" name="taskDescription"></textarea><br>
+        <label for="taskDate">Task Date:</label><br>
+        <input type="date" id="taskDate" name="taskDate"><br>
+        <label for="taskTime">Task Time:</label><br>
+        <input type="time" id="taskTime" name="taskTime"><br>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <div id="taskList">
+        <!-- Tasks will be dynamically added here -->
+    </div>
+
+    <script>
+        document.getElementById('taskForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get form values
+            var taskName = document.getElementById('taskName').value;
+            var taskDescription = document.getElementById('taskDescription').value;
+            var taskDate = document.getElementById('taskDate').value;
+            var taskTime = document.getElementById('taskTime').value;
+
+            // Create task object
+            var task = {
+                name: taskName,
+                description: taskDescription,
+                date: taskDate,
+                time: taskTime
+            };
+
+            // Display task in task list
+            displayTask(task);
+
+            // Clear form fields
+            document.getElementById('taskForm').reset();
+        });
+
+        function displayTask(task) {
+            var taskList = document.getElementById('taskList');
+            var taskItem = document.createElement('div');
+            taskItem.innerHTML = `
+                <h2>${task.name}</h2>
+                <p>Date: ${task.date}</p>
+                <p>Time: ${task.time}</p>
+                <p>Description: ${task.description}</p>
+                <button onclick="editTask()">Edit</button>
+                <button onclick="deleteTask()">Delete</button>
+                <button onclick="sendTask()">Send</button>
+            `;
+            taskList.appendChild(taskItem);
+        }
+
+        function editTask() {
+            // Implement edit functionality
+            alert('Edit task functionality not implemented yet!');
+        }
+
+        function deleteTask() {
+            // Implement delete functionality
+            alert('Delete task functionality not implemented yet!');
+        }
+
+        function sendTask() {
+            // Implement send task functionality
+            alert('Send task functionality not implemented yet!');
+        }
+    </script>
+
+    <script>
+        function addTask() {
+            var taskName = document.getElementById('taskName').value;
+            var taskDate = document.getElementById('taskDate').value;
+            var taskTime = document.getElementById('taskTime').value;
+
+            var taskList = document.getElementById('taskList');
+
+            var taskItem = document.createElement('li');
+            taskItem.className = 'task';
+
+            taskItem.innerHTML = `
+                <div>
+                    <strong>${taskName}</strong><br>
+                    Date: ${taskDate}<br>
+                    Time: ${taskTime}
+                </div>
+                <div>
+                    <button onclick="editTask(this)">Edit</button>
+                    <button onclick="deleteTask(this)">Delete</button>
+                    <button onclick="sendTask(this)">Send</button>
+                </div>
+            `;
+
+            taskList.appendChild(taskItem);
+
+            // Clear input fields after adding a task
+            document.getElementById('taskName').value = '';
+            document.getElementById('taskDate').value = '';
+            document.getElementById('taskTime').value = '';
+        }
+
+        function editTask(button) {
+            var taskItem = button.closest('.task');
+            var taskName = prompt('Edit task name:', taskItem.querySelector('strong').textContent);
+            if (taskName !== null) {
+                taskItem.querySelector('strong').textContent = taskName;
+            }
+        }
+
+        function deleteTask(button) {
+            var taskItem = button.closest('.task');
+            taskItem.remove();
+        }
+
+        function sendTask(button) {
+            var taskItem = button.closest('.task');
+            var taskName = taskItem.querySelector('strong').textContent;
+            var taskDate = taskItem.querySelector('div').textContent.split('Date: ')[1].split('\n')[0];
+            var taskTime = taskItem.querySelector('div').textContent.split('Time: ')[1];
+
+            alert(`Task "${taskName}" scheduled for ${taskDate} at ${taskTime} has been sent.`);
+        }
+    </script>
+</body>
+</html>

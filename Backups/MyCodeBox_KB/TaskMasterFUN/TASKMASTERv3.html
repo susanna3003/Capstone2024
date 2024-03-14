@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Task Manager</h1>
+
+    <form id="taskForm">
+        <label for="taskName">Task Name:</label><br>
+        <input type="text" id="taskName" name="taskName"><br>
+
+        <label for="taskDescription">Description:</label><br>
+        <textarea id="taskDescription" name="taskDescription"></textarea><br>
+
+        <label for="taskDate">Date:</label><br>
+        <input type="date" id="taskDate" name="taskDate"><br>
+
+        <label for="taskTime">Time:</label><br>
+        <input type="time" id="taskTime" name="taskTime"><br>
+
+        <input type="submit" value="Add Task">
+    </form>
+
+    <ul id="taskList">
+        <!-- Task items will be dynamically added here -->
+    </ul>
+
+    <script>
+        // Add your JavaScript code here
+    </script>
+</body>
+</html>

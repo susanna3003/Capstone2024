@@ -7,7 +7,7 @@ with open('schema.sql') as f:
 
         cur.execute("INSERT INTO users (id, firstname, lastname, email, userPass, username, phoneNum) VALUES ('id', 'firstname', 'lastname', 'email', 'userPass', 'username', 'phoneNum', 'accountType')")
         connection.commit()
-        cur.execute("INSERT INTO Teacher (userId, teacherId, subjectTaught, qualifications) VALUES ('userId', 'teacherId', 'subjectTaught', 'qualifications')")
+        cur.execute("INSERT INTO Teacher (userId, teacherId, subjectTaught) VALUES ('userId', 'teacherId', 'subjectTaught')")
         connection.commit()
         cur.execute("INSERT INTO Parent (userId, parentId, childrenInfo) VALUES ('userId', 'parentId', 'childrenInfo')")
         connection.commit()

@@ -1,0 +1,26 @@
+{% extends "theme.html" %} {% block title %} User Page: Taskhub {% endblock %}
+
+{% block content %} 
+<div class = "container-fluid">
+    <div class = "row"> 
+        <!--Sidebar-->
+        <div class = "col-md-3">
+            <div class="list-group">
+                <a href="/settings" class="list-group-item list-group-item-action active">User Settings</a>
+                <a href="/userPage" class="list-group-item list-group-item-action">Account</a>
+                <a href="/preferences" class="list-group-item list-group-item-action">Preferences</a>
+                <a href="/privacy" class="list-group-item list-group-item-action">Privacy</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <header>
+                <h1>Settings</h1>
+            </header>
+            <main>
+                <section>
+                    <h2>User Information</h2>
+            </main>
+        </div>
+    </div>
+</div>
+{% endblock %}

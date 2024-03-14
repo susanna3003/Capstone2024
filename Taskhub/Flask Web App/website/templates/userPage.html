@@ -1,70 +1,132 @@
 {% extends "theme.html" %} {% block title %} User Page: Taskhub {% endblock %}
 
 {% block content %} 
-<header>
-    <h1>Hello, {{ username }}</h1>
-</header>
-<main>
-    <!-- Account type pop up -->
-    {% if show_account_type_popup %}
-    <form id="accountTypeForm">
-        <div class="modal fade" id="accountTypeModal" tabindex="-1" role="dialog" aria-labelledby="accountTypeModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="accountTypeModalLabel">Select Your Account Type</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="modal-body">
-                <p>What type of account would you like?</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="accountType" id="studentRadio" value="student">
-                    <label class="form-check-label" for="studentRadio">
-                    <b>Student</b>
-                    </label>
-                    <p class="description">A student account is for individuals enrolled in educational institutions.</p>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="accountType" id="teacherRadio" value="teacher">
-                    <label class="form-check-label" for="teacherRadio">
-                    <b>Teacher</b>
-                    </label>
-                    <p class="description">A teacher account is for educators who manage classes and assignments.</p>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="accountType" id="parentRadio" value="parent">
-                    <label class="form-check-label" for="parentRadio">
-                    <b>Parent</b>
-                    </label>
-                    <p class="description">A parent account is for users who manage their children's day to day tasks as well as their own!</p>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="accountType" id="standardRadio" value="standard">
-                    <label class="form-check-label" for="standardRadio">
-                    <b>Standard</b>
-                    </label>
-                    <p class="description">A standard account is for users who just want some organization in their lives!</p>
-                </div>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="saveAccountTypeBtn">Save changes</button>
-                </div>
-            </div>
+<!--CSS-->
+<style>
+    .avatar {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    #avatar-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
+</style>
+<div class = "container-fluid">
+    <div class = "row"> 
+        <!--Sidebar-->
+        <div class = "col-md-3">
+            <div class="list-group">
+                <a href="/settings" class="list-group-item list-group-item-action active">User Settings</a>
+                <a href="/userPage" class="list-group-item list-group-item-action">Account</a>
+                <a href="/preferences" class="list-group-item list-group-item-action">Preferences</a>
+                <a href="/privacy" class="list-group-item list-group-item-action">Privacy</a>
             </div>
         </div>
-    </form>
-    {% endif %}
-    <section>
-        <h2>User Information</h2>
-        <p>This is where you can display information about the user.</p>
-    </section>
-    <section>
-        <h2>Recent Activity</h2>
-        <p>Display recent activity or posts here.</p>
-    </section>
-</main>
+        <div class="col-md-9">
+            <header>
+                <div class="avatar-container">
+                    <input type="file" id="avatar-input" style="display: none;" accept="image/*">
+                    <label for="avatar-input">
+                        <img src="../static/placeholder.png" alt="user" class="avatar" id="avatar-image">
+                    </label>
+                </div>
+                <h1>Hello, {{ username }}</h1>
+            </header>
+            <main>
+                <!-- Account type pop up -->
+                {% if show_account_type_popup %}
+                <form id="accountTypeForm">
+                    <div class="modal fade" id="accountTypeModal" tabindex="-1" role="dialog" aria-labelledby="accountTypeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="accountTypeModalLabel">Select Your Account Type</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                            <p>What type of account would you like?</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="accountType" id="studentRadio" value="student">
+                                <label class="form-check-label" for="studentRadio">
+                                <b>Student</b>
+                                </label>
+                                <p class="description">A student account is for individuals enrolled in educational institutions.</p>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="accountType" id="teacherRadio" value="teacher">
+                                <label class="form-check-label" for="teacherRadio">
+                                <b>Teacher</b>
+                                </label>
+                                <p class="description">A teacher account is for educators who manage classes and assignments.</p>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="accountType" id="parentRadio" value="parent">
+                                <label class="form-check-label" for="parentRadio">
+                                <b>Parent</b>
+                                </label>
+                                <p class="description">A parent account is for users who manage their children's day to day tasks as well as their own!</p>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="accountType" id="standardRadio" value="standard">
+                                <label class="form-check-label" for="standardRadio">
+                                <b>Standard</b>
+                                </label>
+                                <p class="description">A standard account is for users who just want some organization in their lives!</p>
+                            </div>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="saveAccountTypeBtn">Save changes</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+                <section>
+                    <h2>User Information</h2>
+                    <p>This is where you can display information about the user.</p>
+                </section>
+                <section>
+                    <h2>Recent Activity</h2>
+                    <p>Display recent activity or posts here.</p>
+                </section>
+                <section>
+                    <h2>Weekly Review</h2>
+                    <p>How was your day? Don't forget to fill out your weekly report!.</p>
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+        
+<!-- Profile Picture Script-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const avatarInput = document.getElementById('avatar-input');
+        const avatarImage = document.getElementById('avatar-image');
+
+        avatarInput.addEventListener('change', function() {
+            const file = avatarInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                avatarImage.src = e.target.result;
+            }
+
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
 
 <!--- Account type popup script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

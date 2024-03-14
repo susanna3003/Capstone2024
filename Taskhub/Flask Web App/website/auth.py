@@ -4,7 +4,7 @@ import sqlite3, re
 
 auth = Blueprint('auth', __name__)
 
-# Login Page
+#   Login Page
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -28,7 +28,7 @@ def login():
                 return redirect(url_for("auth.userPage"))
     return render_template("login.html")
 
-#SignUp page
+#   SignUp page
 @auth.route('/signUp', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
@@ -74,12 +74,12 @@ def sign_up():
             return redirect(url_for("auth.userPage"))
     return render_template("signUp.html")
 
-# About Page
+#   About Page
 @auth.route('/about')
 def about():
     return render_template("about.html")
 
-# user Page
+#   user Page
 @auth.route('/userPage')
 def userPage():
     # Check if the user's account type is set
@@ -94,7 +94,7 @@ def userPage():
     show_account_type_popup = session.get('show_account_type_popup', False)
     return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username=username)
 
-# account type Route/account creaction
+#   account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])
 def save_account_type():
     # Retrieve the selected account type from the form
@@ -121,7 +121,7 @@ def save_account_type():
     session['show_account_type_popup'] = False # Prevents pop up loop
     return redirect(url_for('auth.userPage'))
 
-# Generating unique ID for account type
+#   Generating unique ID for account type
 def generate_unique_teacher_id():
     # Generate a unique ID for the teacher
     teacherId = str(uuid.uuid4())
@@ -135,13 +135,28 @@ def generate_unique_student_id():
     studentId = str(uuid.uuid4())
     return studentId
 
-# Logout route
+#   Logout route
 @auth.route('/logout')
 def logout():
     session.pop('logged_in', None)  # Clear the session variable
     return redirect(url_for('auth.login'))  # Redirect to the login page after logout
 
-# Calendar Route
+#   Calendar Route
 @auth.route('/calendar')
 def calendar():
     return render_template("calendar.html")
+
+#   Setting Route
+@auth.route('/settings')
+def settings():
+    return render_template("settings.html")
+
+#   Preferences Route
+@auth.route('/preferences')
+def preferences():
+    return render_template("preferences.html")
+
+#   Privacy Route
+@auth.route('/privacy')
+def privacy():
+    return render_template("privacy.html")

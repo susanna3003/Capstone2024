@@ -50,8 +50,8 @@ def sign_up():
             flash('Last Name must be greater than 1 character!', category='error')
         elif password != passwordCon:
             flash('Passwords don\'t match!', category='error')
-        elif len(password) < 12:
-            flash('Password must be at least 12 characters', category='error')
+        elif len(password) < 7:
+            flash('Password must be at least 7 characters', category='error')
         elif not re.match(r'^\d{3}-\d{3}-\d{4}$', phoneNum):
             flash('Phone number must be in the format XXX-XXX-XXXX', category='error')
         else:

@@ -146,11 +146,6 @@ def logout():
 def calendar():
     return render_template("calendar.html")
 
-#   Setting Route
-@auth.route('/settings')
-def settings():
-    return render_template("settings.html")
-
 #   Preferences Route
 @auth.route('/preferences')
 def preferences():
@@ -160,3 +155,47 @@ def preferences():
 @auth.route('/privacy')
 def privacy():
     return render_template("privacy.html")
+
+#   Account Deletion Route
+@auth.route('/delete-account', methods=['GET', 'POST'])
+def delete_account():
+    if request.method == 'POST':
+        user_id = session.get('id')
+
+        # Delete the user's account from the database
+        conn = sqlite3.connect('userDatabase.db')
+        cur = conn.cursor()
+        cur.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+        conn.close()
+
+        # Clear the session
+        session.clear()
+
+        # Redirect the user to the home page
+        # Flash a message to indicate that their account  has been updated
+        flash('Your account has successfully been deleted! Goodbye!', 'success')
+    return redirect(url_for('views.home'))
+
+#   Update Password
+@auth.route('/updatePass', methods=['POST'])
+def update_pass():
+    if request.method == 'POST':
+        user_id = session.get('id')
+        new_password = request.form.get('newPass')
+
+        # Connect to the database and update password
+        conn = sqlite3.connect('userDatabase.db')
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET userPass = ? WHERE id = ?", (new_password, user_id))
+        conn.commit()
+        conn.close()
+
+        # Flash a message to indicate that the password has been updated
+        flash('Your password has been updated successfully!', 'success')
+
+        # Redirect the user back to the user page
+        return redirect(url_for('auth.userPage'))
+    return "Method Not Allowed", 405
+
+

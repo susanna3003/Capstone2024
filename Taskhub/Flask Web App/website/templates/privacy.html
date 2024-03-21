@@ -19,7 +19,21 @@
             <main>
                 <section>
                     <h2>Change Email</h2>
-                    <button type="button" class="btn btn-primary btn-lg"><strong>Update Email</strong></button>
+                    <form method="POST" action="/updateEmail">
+                        <div class="form-group">
+                            <label for="newEmail">New Email</label>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                id="newEmail"
+                                name="newEmail"
+                                required
+                                placeholder="Enter New Email"
+                            />
+                        </br>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg"><strong>Update Email</strong></button>
+                    </form>
                     <h2>Update Password</h2>
                     <form method="POST" action="/updatePass">
                         <div class="form-group">
@@ -43,9 +57,11 @@
                                 required
                                 placeholder="Enter New Password"
                             />
+                        </br>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg"><strong>Update Password</strong></button>
                     </form>
+                    <a href="/forgotPassword"><i>Forgot Password?</i></a>
                     <h2>Delete Account</h2>
                     <button id="delete-account-btn" class="btn btn-danger">Delete Account</button>
                 </section>

@@ -182,20 +182,54 @@ def delete_account():
 def update_pass():
     if request.method == 'POST':
         user_id = session.get('id')
-        new_password = request.form.get('newPass')
+        newPassword = request.form.get('newPass')
+        currentPassword = request.form.get('currPass')
 
         # Connect to the database and update password
         conn = sqlite3.connect('userDatabase.db')
         cur = conn.cursor()
-        cur.execute("UPDATE users SET userPass = ? WHERE id = ?", (new_password, user_id))
+        cur.execute("SELECT userPass FROM users WHERE id = ?", (user_id,))
+        storedPassword = cur.fetchone()[0]
+
+        # Determine if current password matches database password before changing
+        if currentPassword == storedPassword:
+            # Update the password in the database
+            cur.execute("UPDATE users SET userPass = ? WHERE id = ?", (newPassword, user_id))
+            conn.commit()
+            conn.close()
+
+            # Flash a success message
+            flash('Your password has been updated successfully!', 'success')
+            return redirect(url_for('auth.userPage'))
+        else:
+            # Flash an error message
+            flash('Incorrect current password. Please try again.', 'error')
+            return redirect(url_for('auth.privacy'))
+    return "Method Not Allowed", 405
+
+#   Update email
+@auth.route('/updateEmail', methods=['POST'])
+def updateEmail():
+    if request.method == 'POST':
+        user_id = session.get('id')
+        new_email = request.form.get('newEmail')
+
+        # Connect to the database and update email
+        conn = sqlite3.connect('userDatabase.db')
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET email = ? WHERE id = ?", (new_email, user_id))
         conn.commit()
         conn.close()
 
         # Flash a message to indicate that the password has been updated
-        flash('Your password has been updated successfully!', 'success')
+        flash('Your email has been updated successfully!', 'success')
+    # Redirect the user back to the user page
+    return redirect(url_for('auth.userPage'))
 
-        # Redirect the user back to the user page
-        return redirect(url_for('auth.userPage'))
-    return "Method Not Allowed", 405
+# Forgot Password
+@auth.route('/forgotPassword')
+def forgotPassword():
+    return render_template("forgotPassword.html")
+
 
 

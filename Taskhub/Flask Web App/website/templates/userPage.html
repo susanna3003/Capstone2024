@@ -3,14 +3,16 @@
 {% block content %} 
 <!--CSS-->
 <style>
-    .avatar {
+    .avatar 
+    {
         width: 200px;
         height: 200px;
         border-radius: 50%;
         object-fit: cover;
     }
 
-    #avatar-input {
+    #avatar-input 
+    {
         position: absolute;
         top: 0;
         left: 0;
@@ -18,6 +20,33 @@
         height: 100%;
         opacity: 0;
     }
+
+    #accessTaskButton 
+    {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #598269;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+
+    #accessReminderButton 
+    {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #598269;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+
 </style>
 <div class = "container-fluid">
     <div class = "row"> 
@@ -95,6 +124,12 @@
                 <section>
                     <h2>User Information</h2>
                     <p>This is where you can display information about the user.</p>
+                </section>
+                <section>
+                    <h2>Tasks & Reminders</h2>
+                    <p>Access your tasks and reminders here.</p>
+                    <button id="accessTaskButton" onclick="openModal()">My Tasks</button>
+                    <button id="accessReminderButton" onclick="openModal()">My Reminders</button>
                 </section>
                 <section>
                     <h2>Recent Activity</h2>

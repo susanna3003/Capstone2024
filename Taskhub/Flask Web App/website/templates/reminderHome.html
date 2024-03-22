@@ -1,7 +1,6 @@
 {% extends "theme.html" %}
 {% block title %} About: Taskhub {% endblock %}
 
-
 {% block content %}
 <style>
     * 
@@ -139,79 +138,69 @@ input[type=submit]:hover
 }
 </style>
 
-<h1>My Tasks</h1>
-<p>This is where user tasks will be listed. It looks like your tasks are empty right now!</p>
+<h1>My Reminders</h1>
+<p>This is where user reminders will be listed. It looks like your reminders are empty right now!</p>
 
-<button id="createTaskButton" onclick="openModal()">Create Task</button>
+<button id="createReminderButton" onclick="openModal()">Create Reminder</button>
 
-<div id="taskCreateForm" class="popup">
-    <form class="popup-content" id="newTaskForm">
-      <span class="close">&times;</span>
-      <h2>Task Creation</h2>
+<div id="reminderCreateForm" class="popup">
+      <form class="popup-content" id="myForm">
+        <span class="close">&times;</span>
+        <h2>Reminder Creation</h2>
 
-      <!--- task name --->
-      <label for="taskName">Task name: </label>
-      <input type="text" id="taskName" placeholder="Task Name" required><br>
+        <!--- reminder name --->
+        <label for="reminderName">Reminder name: </label>
+        <input type="text" id="reminderName" placeholder="Reminder Name" required><br>
 
-      <br>
-      <!--- task type --->
-      <label for="taskType">Task type: </label>
-      <select id="taskType" name="taskType" required>
-        <option value="choose">Please choose a type</option>
-        <option value="Test/Quiz">Test/Quiz</option>
-        <option value="Homework">Homework</option>
-        <option value="Unassigned Study">Unassigned Study</option>
-        <option value="Misc">Miscellaneous</option>
-      </select><br>
+        <br>
+      <!--- reminder date --->
+        <label for="dateDue">Date due: </label>
+        <input type="date" id="dateDue" name="datePicker" required><br>
 
-      <br>
-    <!--- task date --->
-      <label for="dateDue">Date due: </label>
-      <input type="date" id="dateDue" name="datePicker" required><br>
+        <br>
+        <!--- optional --->
+        <h3>Optional:</h3>
 
-      <br>
-      <!--- optional --->
-      <h3>Optional:</h3>
+        <!--- reminder location --->
+        <label for="reminderLocation">Add a location: </label>
+        <input type="text" id="reminderLocation" placeholder="Location"><br>
 
-      <!--- task location --->
-      <label for="taskLocation">Add a location: </label>
-      <input type="text" id="taskLocation" placeholder="Location"><br>
+        <!--- reminder invites --->
+        <label for="reminderInvite">Task invites: </label>
+        <input type="text" id="reminderInvite" placeholder="Reminder Invite"><br>
 
-      <!--- task invites --->
-      <label for="taskInvite">Task invites: </label>
-      <input type="text" id="taskInvite" placeholder="Task Invite"><br>
+        <!--- reminder recurring --->
+        <label for="reminderRecurr">Recurring: </label>
+        <select id="reminderRecurr" name="reminderRecurr">
+          <option value="choose">Recurring? Y/N</option>
+          <option value="yes">YES</option>
+          <option value="no">NO</option>
+        </select><br>
 
-      <!--- task reminder --->
-      <label for="taskRemind">Reminder: </label>
-      <select id="taskRemind" name="taskRemind">
-        <option value="choose">Reminder? Y/N</option>
-        <option value="yes">YES</option>
-        <option value="no">NO</option>
-      </select><br>
-
-      <br>
-      <button type="submit">Submit</button>
+        <br>
+        <button type="submit">Submit</button>
+      </form>
 </div>
 
 <div>
   <br>
-  <p id="rcorners1">{{taskName}}</p>
+  <p id="rcorners1">{{reminderName}}</p>
 </div>
   
-<!--- <script src="script.js"></script> --->
+<script src="script.js"></script>
 
 <script>
   // Get the button element
-  var createTaskButton = document.getElementById("createTaskButton");
+  var createReminderButton = document.getElementById("createReminderButton");
 
   // Get the modal element
-  var modal = document.getElementById("taskCreateForm");
+  var modal = document.getElementById("reminderCreateForm");
 
   // Get the close button element inside the modal
   var closeButton = modal.querySelector(".close");
 
   // Function to open the modal when the button is clicked
-  createTaskButton.addEventListener("click", function() {
+  createReminderButton.addEventListener("click", function() {
     modal.style.display = "block";
   });
 

@@ -21,30 +21,33 @@
         opacity: 0;
     }
 
-    #accessTaskButton 
+    .container 
     {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: #598269;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
+    text-align: center; /* Centers content horizontally */
+    }
+
+    .button-container 
+    {
+    margin-top: 10px; /* Adjust as needed */
+    }
+
+    #accessTaskButton,
+    #accessReminderButton 
+    {
+    padding: 10px 20px; /* Adjust padding as needed */
+    margin: 0 5px; /* Adjust margin as needed */
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Soft corner */
+    background-color: #f0f0f0; /* Button background color */
+    color: #333; /* Button text color */
+    font-size: 16px; /* Adjust font size as needed */
     cursor: pointer;
     }
 
-    #accessReminderButton 
+    #accessTaskButton:hover,
+    #accessReminderButton:hover 
     {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: #598269;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: #e0e0e0; /* Change background color on hover */
     }
 
 </style>
@@ -72,7 +75,7 @@
             <main>
                 <!-- Account type pop up -->
                 {% if show_account_type_popup %}
-                <form id="accountTypeForm">
+                <form method="post" action="."id="accountTypeForm">
                     <div class="modal fade" id="accountTypeModal" tabindex="-1" role="dialog" aria-labelledby="accountTypeModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -114,7 +117,7 @@
                             </div>
                             </div>
                             <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="saveAccountTypeBtn">Save changes</button>
+                            <button type="button" class="btn btn-primary" id="saveAccountTypeBtn" name="submit">Save changes</button>
                             </div>
                         </div>
                         </div>
@@ -128,8 +131,10 @@
                 <section>
                     <h2>Tasks & Reminders</h2>
                     <p>Access your tasks and reminders here.</p>
-                    <button id="accessTaskButton" onclick="openModal()">My Tasks</button>
-                    <button id="accessReminderButton" onclick="openModal()">My Reminders</button>
+                    <div class="button-container">
+                        <a href="{{ url_for('auth.taskHome') }}"><button id="accessTaskButton" onclick="openModal()">My Tasks</button></a>
+                        <a href="{{ url_for('auth.reminderHome') }}"><button id="accessReminderButton" onclick="openModal()">My Reminders</button></a>
+                    </div>
                 </section>
                 <section>
                     <h2>Recent Activity</h2>

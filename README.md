@@ -23,6 +23,6 @@ flask --app main run --debug
  email: joecool@email.com
  user: joecool
  pass: JoeCool123
-
-IF GIT SYNCING ISSUE
-    rebase branch -> choose branch
+ 
+ GIT COMMIT ISSUE:
+ rebase branch -> choose branch

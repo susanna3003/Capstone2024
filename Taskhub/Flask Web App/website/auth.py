@@ -80,9 +80,11 @@ def about():
     return render_template("about.html")
 
 #   user Page
-@auth.route('/userPage')
+@auth.route('/userPage', methods=['GET','POST'])
 def userPage():
     # Check if the user's account type is set
+
+    #if request.method == 'POST':
     user_id = session.get('id')
     conn = sqlite3.connect('userDatabase.db')
     cur = conn.cursor()
@@ -92,7 +94,8 @@ def userPage():
     username = user_data[0] if user_data else "User"
     conn.close()
     show_account_type_popup = session.get('show_account_type_popup', False)
-    return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username=username)
+    #accountType = request.get('accountType')
+    return render_template("userPage.html")
 
 #   account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])
@@ -230,6 +233,16 @@ def updateEmail():
 @auth.route('/forgotPassword')
 def forgotPassword():
     return render_template("forgotPassword.html")
+
+# Task Home
+@auth.route('/taskHome')
+def taskHome():
+    return render_template("taskHome.html")
+
+# Task Home
+@auth.route('/reminderHome')
+def reminderHome():
+    return render_template("reminderHome.html")
 
 
 

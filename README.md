@@ -23,3 +23,6 @@ flask --app main run --debug
  email: joecool@email.com
  user: joecool
  pass: JoeCool123
+ 
+ GIT COMMIT ISSUE:
+ rebase branch -> choose branch

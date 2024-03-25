@@ -26,22 +26,8 @@ body
 /* Style for the create task button */
 #createTaskButton 
 {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 10px 20px;
-  background-color: #598269;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#createReminderButton 
-{
-  position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 500px;
+  right: 300px;
   padding: 10px 20px;
   background-color: #598269;
   color: #fff;
@@ -142,7 +128,7 @@ input[type=submit]:hover
 <h1>My Tasks</h1>
 <p>This is where user tasks will be listed. It looks like your tasks are empty right now!</p>
 
-<button id="createTaskButton" onclick="openModal()">Create Task</button>
+<p align="right"><button id="createTaskButton" onclick="openModal()">Create Task</button></p>
 
 <div id="taskCreateForm" class="popup">
     <form class="popup-content" id="newTaskForm">

@@ -18,3 +18,11 @@ flask --app main run --debug
  *** because we start in main.py -- debug means any saved changes to main.py will restart the server***
  
  '''
+
+ TESTER LOGIN
+ email: joecool@email.com
+ user: joecool
+ pass: JoeCool123
+ 
+ GIT COMMIT ISSUE:
+ rebase branch -> choose branch

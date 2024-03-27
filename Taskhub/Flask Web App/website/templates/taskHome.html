@@ -1,0 +1,228 @@
+{% extends "theme.html" %}
+{% block title %} About: Taskhub {% endblock %}
+
+
+{% block content %}
+<style>
+    * 
+{
+  box-sizing: border-box;
+}
+
+body 
+{
+  font-family: Arial, Helvetica, sans-serif;  
+}
+
+#rcorners1 {
+  border-radius: 25px;
+  background: #598269;
+  color: #fff;
+  padding: 20px; 
+  width: 200px;
+  height: 150px;  
+}
+
+/* Style for the create task button */
+#createTaskButton 
+{
+  top: 500px;
+  right: 300px;
+  padding: 10px 20px;
+  background-color: #598269;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Style for the pop-up modal */
+.popup 
+{
+  display: none;
+  /* Add more styles for positioning, background color, etc. */
+}
+
+.popup-content
+{
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #c3d5c8;
+}
+
+input[type=text], select, textarea 
+{
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+label
+{
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=submit] 
+{
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=submit]:hover 
+{
+  background-color: #45a049;
+}
+
+.container 
+{
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.col-25 
+{
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 
+{
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row::after 
+{
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) 
+{
+  .col-25, .col-75, input[type=submit] 
+  {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+</style>
+
+<h1>My Tasks</h1>
+<p>This is where user tasks will be listed. It looks like your tasks are empty right now!</p>
+
+<p align="right"><button id="createTaskButton" onclick="openModal()">Create Task</button></p>
+
+<div id="taskCreateForm" class="popup">
+    <form class="popup-content" id="newTaskForm">
+      <span class="close">&times;</span>
+      <h2>Task Creation</h2>
+
+      <!--- task name --->
+      <label for="taskName">Task name: </label>
+      <input type="text" id="taskName" placeholder="Task Name" required><br>
+
+      <br>
+      <!--- task type --->
+      <label for="taskType">Task type: </label>
+      <select id="taskType" name="taskType" required>
+        <option value="choose">Please choose a type</option>
+        <option value="Test/Quiz">Test/Quiz</option>
+        <option value="Homework">Homework</option>
+        <option value="Unassigned Study">Unassigned Study</option>
+        <option value="Misc">Miscellaneous</option>
+      </select><br>
+
+      <br>
+    <!--- task date --->
+      <label for="dateDue">Date due: </label>
+      <input type="date" id="dateDue" name="datePicker" required><br>
+
+      <br>
+      <!--- optional --->
+      <h3>Optional:</h3>
+
+      <!--- task location --->
+      <label for="taskLocation">Add a location: </label>
+      <input type="text" id="taskLocation" placeholder="Location"><br>
+
+      <!--- task invites --->
+      <label for="taskInvite">Task invites: </label>
+      <input type="text" id="taskInvite" placeholder="Task Invite"><br>
+
+      <!--- task reminder --->
+      <label for="taskRemind">Reminder: </label>
+      <select id="taskRemind" name="taskRemind">
+        <option value="choose">Reminder? Y/N</option>
+        <option value="yes">YES</option>
+        <option value="no">NO</option>
+      </select><br>
+
+      <br>
+      <button type="submit">Submit</button>
+</div>
+
+<div>
+  <br>
+  <p id="rcorners1">{{taskName}}</p>
+</div>
+  
+<!--- <script src="script.js"></script> --->
+
+<script>
+  // Get the button element
+  var createTaskButton = document.getElementById("createTaskButton");
+
+  // Get the modal element
+  var modal = document.getElementById("taskCreateForm");
+
+  // Get the close button element inside the modal
+  var closeButton = modal.querySelector(".close");
+
+  // Function to open the modal when the button is clicked
+  createTaskButton.addEventListener("click", function() {
+    modal.style.display = "block";
+  });
+
+  // Function to close the modal when the close button is clicked
+  closeButton.addEventListener("click", function() {
+    modal.style.display = "none";
+  });
+</script>
+
+<script>
+  function validateForm() {
+    // Get the value of the due date input
+    var dueDateInput = document.getElementById('dateDue').value;
+
+    // Get the current date
+    var currentDate = new Date().toISOString().slice(0, 10);
+
+    // Compare due date with current date
+    if (dueDateInput <= currentDate) {
+      // Display error message
+      alert('Please enter a due date in the future.');
+      return false; // Prevent form submission
+    }
+
+    return true; // Allow form submission
+  }
+</script>
+{% endblock %}

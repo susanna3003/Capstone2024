@@ -6,7 +6,7 @@
         <!--Sidebar-->
         <div class = "col-md-3">
             <div class="list-group">
-                <a href="/settings" class="list-group-item list-group-item-action active">User Settings</a>
+                <a class="list-group-item list-group-item-action active">User Settings</a>
                 <a href="/userPage" class="list-group-item list-group-item-action">Account</a>
                 <a href="/preferences" class="list-group-item list-group-item-action">Preferences</a>
                 <a href="/privacy" class="list-group-item list-group-item-action">Privacy</a>
@@ -18,9 +18,70 @@
             </header>
             <main>
                 <section>
-                    <h2>Email Settings</h2>
+                    <h2>Change Email</h2>
+                    <form method="POST" action="/updateEmail">
+                        <div class="form-group">
+                            <label for="newEmail">New Email</label>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                id="newEmail"
+                                name="newEmail"
+                                required
+                                placeholder="Enter New Email"
+                            />
+                        </br>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg"><strong>Update Email</strong></button>
+                    </form>
+                    <h2>Update Password</h2>
+                    <form method="POST" action="/updatePass">
+                        <div class="form-group">
+                            <label for="currPass">Current Password</label>
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="currPass"
+                                name="currPass"
+                                required
+                                placeholder="Enter Current Password"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="newPass">New Password</label>
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="newPass"
+                                name="newPass"
+                                required
+                                placeholder="Enter New Password"
+                            />
+                        </br>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg"><strong>Update Password</strong></button>
+                    </form>
+                    <a href="/forgotPassword"><i>Forgot Password?</i></a>
+                    <h2>Delete Account</h2>
+                    <button id="delete-account-btn" class="btn btn-danger">Delete Account</button>
+                </section>
             </main>
         </div>
     </div>
 </div>
+
+<!--Account Deletion Script-->
+<script>
+    document.getElementById('delete-account-btn').addEventListener('click', function() {
+    // Confirmation dialog
+    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        // Creating a hidden form to submit the request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/delete-account';
+        document.body.appendChild(form);
+        form.submit();
+    }
+});
+</script>
 {% endblock %}

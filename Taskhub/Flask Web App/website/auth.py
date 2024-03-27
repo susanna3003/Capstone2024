@@ -50,8 +50,8 @@ def sign_up():
             flash('Last Name must be greater than 1 character!', category='error')
         elif password != passwordCon:
             flash('Passwords don\'t match!', category='error')
-        elif len(password) < 12:
-            flash('Password must be at least 12 characters', category='error')
+        elif len(password) < 7:
+            flash('Password must be at least 7 characters', category='error')
         elif not re.match(r'^\d{3}-\d{3}-\d{4}$', phoneNum):
             flash('Phone number must be in the format XXX-XXX-XXXX', category='error')
         else:
@@ -146,11 +146,6 @@ def logout():
 def calendar():
     return render_template("calendar.html")
 
-#   Setting Route
-@auth.route('/settings')
-def settings():
-    return render_template("settings.html")
-
 #   Preferences Route
 @auth.route('/preferences')
 def preferences():
@@ -160,3 +155,81 @@ def preferences():
 @auth.route('/privacy')
 def privacy():
     return render_template("privacy.html")
+
+#   Account Deletion Route
+@auth.route('/delete-account', methods=['GET', 'POST'])
+def delete_account():
+    if request.method == 'POST':
+        user_id = session.get('id')
+
+        # Delete the user's account from the database
+        conn = sqlite3.connect('userDatabase.db')
+        cur = conn.cursor()
+        cur.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+        conn.close()
+
+        # Clear the session
+        session.clear()
+
+        # Redirect the user to the home page
+        # Flash a message to indicate that their account  has been updated
+        flash('Your account has successfully been deleted! Goodbye!', 'success')
+    return redirect(url_for('views.home'))
+
+#   Update Password
+@auth.route('/updatePass', methods=['POST'])
+def update_pass():
+    if request.method == 'POST':
+        user_id = session.get('id')
+        newPassword = request.form.get('newPass')
+        currentPassword = request.form.get('currPass')
+
+        # Connect to the database and update password
+        conn = sqlite3.connect('userDatabase.db')
+        cur = conn.cursor()
+        cur.execute("SELECT userPass FROM users WHERE id = ?", (user_id,))
+        storedPassword = cur.fetchone()[0]
+
+        # Determine if current password matches database password before changing
+        if currentPassword == storedPassword:
+            # Update the password in the database
+            cur.execute("UPDATE users SET userPass = ? WHERE id = ?", (newPassword, user_id))
+            conn.commit()
+            conn.close()
+
+            # Flash a success message
+            flash('Your password has been updated successfully!', 'success')
+            return redirect(url_for('auth.userPage'))
+        else:
+            # Flash an error message
+            flash('Incorrect current password. Please try again.', 'error')
+            return redirect(url_for('auth.privacy'))
+    return "Method Not Allowed", 405
+
+#   Update email
+@auth.route('/updateEmail', methods=['POST'])
+def updateEmail():
+    if request.method == 'POST':
+        user_id = session.get('id')
+        new_email = request.form.get('newEmail')
+
+        # Connect to the database and update email
+        conn = sqlite3.connect('userDatabase.db')
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET email = ? WHERE id = ?", (new_email, user_id))
+        conn.commit()
+        conn.close()
+
+        # Flash a message to indicate that the password has been updated
+        flash('Your email has been updated successfully!', 'success')
+    # Redirect the user back to the user page
+    return redirect(url_for('auth.userPage'))
+
+# Forgot Password
+@auth.route('/forgotPassword')
+def forgotPassword():
+    return render_template("forgotPassword.html")
+
+
+

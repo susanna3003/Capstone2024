@@ -8,25 +8,25 @@ CREATE TABLE users (
     userPass VARCHAR(12) NOT NULL,
     username VARCHAR(12) NOT NULL,
     phoneNum VARCHAR(15) NOT NULL,
-    accountType VARCHAR(15)
+    accountType VARCHAR(15),
+    profilePicturePath VARCHAR(255)
 );
 
-CREATE TABLE Teacher (
+CREATE TABLE IF NOT EXISTS Teacher (
     userId INTEGER PRIMARY KEY,
     teacherId INTEGER UNIQUE,
-    subjectsTaught TEXT,
-    qualifications TEXT,
+    subjectTaught TEXT,
     FOREIGN KEY (userId) REFERENCES User(id)
 );
 
-CREATE TABLE Parent (
+CREATE TABLE IF NOT EXISTS Parent (
     userId INTEGER PRIMARY KEY,
     parentId INTEGER UNIQUE,
     childrenInfo TEXT,
     FOREIGN KEY (userId) REFERENCES User(id)
 );
 
-CREATE TABLE Student (
+CREATE TABLE IF NOT EXISTS Student (
     userId INTEGER PRIMARY KEY,
     studentId INTEGER UNIQUE,
     gradeLevel TEXT,

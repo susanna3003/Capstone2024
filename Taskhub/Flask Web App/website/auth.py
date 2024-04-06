@@ -74,7 +74,7 @@ def sign_up():
             conn.close()
             return redirect(url_for("auth.userPage"))
     return render_template("signUp.html")
-
+    
 #   About Page
 @auth.route('/about')
 def about():
@@ -95,8 +95,7 @@ def userPage():
     username = user_data[0] if user_data else "User"
     conn.close()
     show_account_type_popup = session.get('show_account_type_popup', False)
-    #accountType = request.get('accountType')
-    return render_template("userPage.html")
+    return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username = username)
 
 #   account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])

@@ -65,9 +65,16 @@
         <div class="col-md-9">
             <header>
                 <div class="avatar-container">
-                    <input type="file" id="avatar-input" style="display: none;" accept="image/*">
                     <label for="avatar-input">
-                        <img src="../static/placeholder.png" alt="user" class="avatar" id="avatar-image">
+                        {% if accountType == 'teacher' %}
+                            <img src="../static/teacherstar.png" alt="user" class="avatar" id="avatar-image">
+                        {% elif accountType == 'student' %}
+                            <img src="../static/studentstar.png" alt="user" class="avatar" id="avatar-image">
+                        {% elif accountType == 'parent' %}
+                            <img src="../static/parentIcon.png" alt="user" class="avatar" id="avatar-image">
+                        {% else %}
+                            <img src="../static/userstar.png" alt="user" class="avatar" id="avatar-image">
+                        {% endif %}
                     </label>
                 </div>
                 <h1>Hello, {{ username }}</h1>
@@ -148,25 +155,6 @@
         </div>
     </div>
 </div>
-        
-<!-- Profile Picture Script-->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const avatarInput = document.getElementById('avatar-input');
-        const avatarImage = document.getElementById('avatar-image');
-
-        avatarInput.addEventListener('change', function() {
-            const file = avatarInput.files[0];
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                avatarImage.src = e.target.result;
-            }
-
-            reader.readAsDataURL(file);
-        });
-    });
-</script>
 
 <!--- Account type popup script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

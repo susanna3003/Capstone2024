@@ -238,6 +238,15 @@ def forgotPassword():
 @auth.route('/taskHome')
 def taskHome():
     return render_template("taskHome.html")
+    if request.method == 'POST':
+        email = request.form.get('email')
+        firstName = request.form.get('firstName')
+        lastName = request.form.get('lastName')
+        password = request.form.get('password')
+        passwordCon = request.form.get('passwordCon')
+        username = request.form.get('username')
+        phoneNum = request.form.get('phoneNum')
+        accountType = request.form.get('selectedAccountType')
 
 # Task Home
 @auth.route('/reminderHome')

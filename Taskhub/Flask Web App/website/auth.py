@@ -1,5 +1,6 @@
 import uuid
 from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for
+from datetime import date
 import sqlite3, re
 
 auth = Blueprint('auth', __name__)
@@ -237,16 +238,32 @@ def forgotPassword():
 # Task Home
 @auth.route('/taskHome')
 def taskHome():
-    return render_template("taskHome.html")
     if request.method == 'POST':
-        email = request.form.get('email')
-        firstName = request.form.get('firstName')
-        lastName = request.form.get('lastName')
-        password = request.form.get('password')
-        passwordCon = request.form.get('passwordCon')
-        username = request.form.get('username')
-        phoneNum = request.form.get('phoneNum')
-        accountType = request.form.get('selectedAccountType')
+        userID = session.get('id')
+        taskID = uuid.uuid4()
+        taskName = request.form.get('taskName')
+        taskType = request.form.get('taskType')
+        dateDue = request.form.get('dateDue')
+        dateCreated = date.today()
+        location = request.form.get('taskLocation')
+        invites = request.form.get('taskInvite')
+        reminder = request.form.get('taskRemind')
+
+        # Connect to the database
+        conn = sqlite3.connect('taskDatabase.db')
+        cur = conn.cursor()
+
+        # Insert the user information into the database
+        cur.execute("INSERT INTO tasks (taskID, userID, taskName, taskType, dateDue, dateCreated, location, invites, reminder) VALUES (?, ?, ?, ?, ?, ?, ?)", (taskID, userID, taskName, taskType, dateDue, dateCreated, location, invites, reminder))
+        user_id = cur.lastrowid  # Get the ID of the inserted user
+        session['id'] = user_id
+
+        # Commit the changes and close the connection
+        conn.commit()
+        flash('Task created!', category='success')
+        session['logged_in'] = True
+        conn.close()
+    return render_template("taskHome.html")
 
 # Task Home
 @auth.route('/reminderHome')

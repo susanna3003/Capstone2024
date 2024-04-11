@@ -157,10 +157,12 @@ input[type=submit]:hover
 
       <br>
 
-<!-- ADD DESCRIPTION BOX -->
-
       <!--- optional --->
       <h3>Optional:</h3>
+
+      <!-- task description -->
+      <label for="taskDescription">Description: </label>
+      <input type=""textarea" id="taskDescription" name="taskDescription"><br>
 
       <!--- task location --->
       <label for="taskLocation">Add a location: </label>
@@ -177,7 +179,15 @@ input[type=submit]:hover
         <option value="yes">YES</option>
         <option value="no">NO</option>
       </select><br>
-<!--- ADD RECURRING BUTTON -->
+
+      <!--- task reminder --->
+      <label for="taskRecurr">Recurring: </label>
+      <select id="taskRecurr" name="taskRecurr">
+        <option value="choose">Recurring? Y/N</option>
+        <option value="yes">YES</option>
+        <option value="no">NO</option>
+      </select><br>
+
       <br>
       <button type="submit">Submit</button>
 </div>

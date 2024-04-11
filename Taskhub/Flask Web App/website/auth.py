@@ -1,6 +1,9 @@
 import uuid
-from flask import Blueprint, session, render_template, request, flash, redirect, url_for
+
+from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for
 from flask_mail import Message
+from datetime import date
+
 import sqlite3, re
 from website import mail
 auth = Blueprint('auth', __name__)
@@ -232,9 +235,36 @@ def updateEmail():
 # Task Home
 @auth.route('/taskHome')
 def taskHome():
+    if request.method == 'POST':
+        userID = session.get('id')
+        taskID = uuid.uuid4()
+        taskName = request.form.get('taskName')
+        taskType = request.form.get('taskType')
+        dateDue = request.form.get('dateDue')
+        dateCreated = date.today()
+        description = request.form.get('taskDescription')
+        location = request.form.get('taskLocation')
+        invites = request.form.get('taskInvite')
+        reminder = request.form.get('taskRemind')
+        recurringTask = request.form.get('taskRecurr')
+
+        # Connect to the database
+        conn = sqlite3.connect('taskDatabase.db')
+        cur = conn.cursor()
+
+        # Insert the user information into the database
+        cur.execute("INSERT INTO tasks (taskID, userId, name, taskType, deadline, creationDate, description, location, recurringTask) VALUES (?, ?, ?, ?, ?, ?, ?)", (taskID, userID, taskName, taskType, dateDue, dateCreated, description, location, recurringTask))
+        user_id = cur.lastrowid  # Get the ID of the inserted user
+        session['id'] = user_id
+
+        # Commit the changes and close the connection
+        conn.commit()
+        flash('Task created!', category='success')
+        session['logged_in'] = True
+        conn.close()
     return render_template("taskHome.html")
 
-# Task Home
+# Reminder Home
 @auth.route('/reminderHome')
 def reminderHome():
     return render_template("reminderHome.html")

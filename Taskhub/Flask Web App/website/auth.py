@@ -1,8 +1,11 @@
 import uuid
-from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for
-from datetime import date
-import sqlite3, re
 
+from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for
+from flask_mail import Message
+from datetime import date
+
+import sqlite3, re
+from website import mail
 auth = Blueprint('auth', __name__)
 
 #   Login Page
@@ -74,7 +77,7 @@ def sign_up():
             conn.close()
             return redirect(url_for("auth.userPage"))
     return render_template("signUp.html")
-
+    
 #   About Page
 @auth.route('/about')
 def about():
@@ -95,8 +98,7 @@ def userPage():
     username = user_data[0] if user_data else "User"
     conn.close()
     show_account_type_popup = session.get('show_account_type_popup', False)
-    #accountType = request.get('accountType')
-    return render_template("userPage.html")
+    return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username = username)
 
 #   account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])
@@ -181,7 +183,7 @@ def delete_account():
         flash('Your account has successfully been deleted! Goodbye!', 'success')
     return redirect(url_for('views.home'))
 
-#   Update Password
+#   Update Password Route
 @auth.route('/updatePass', methods=['POST'])
 def update_pass():
     if request.method == 'POST':
@@ -211,7 +213,7 @@ def update_pass():
             return redirect(url_for('auth.privacy'))
     return "Method Not Allowed", 405
 
-#   Update email
+#   Update email route
 @auth.route('/updateEmail', methods=['POST'])
 def updateEmail():
     if request.method == 'POST':
@@ -229,11 +231,6 @@ def updateEmail():
         flash('Your email has been updated successfully!', 'success')
     # Redirect the user back to the user page
     return redirect(url_for('auth.userPage'))
-
-# Forgot Password
-@auth.route('/forgotPassword')
-def forgotPassword():
-    return render_template("forgotPassword.html")
 
 # Task Home
 @auth.route('/taskHome')
@@ -272,5 +269,36 @@ def taskHome():
 def reminderHome():
     return render_template("reminderHome.html")
 
+   #!!!!! Forgot Password Group !!!!!!#
+# Forgot Password Route
+@auth.route('/forgotPassword', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        user_email = request.form.get('userEmail')
+        if emailDatabaseCheck(user_email):
+            passwordResetEmail(user_email)
+            flash('An email with instructions to reset your password has been sent.', 'info')
+            return redirect(url_for('auth.login'))
+        else:
+            # If the email doesn't exist in the database, show an error message
+            flash('Email not found. Please enter a valid email address.', 'error')
+            return render_template("forgotPassword.html")
+    else:
+        # Render the forgot password form
+        return render_template("forgotPassword.html")
+    
+# Function to check if email exists in the database
+def emailDatabaseCheck(email):
+    conn = sqlite3.connect('userDatabase.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE email = ?", (email,))
+    user = cur.fetchone()
+    conn.close()
+    return user is not None
 
-
+# Send password reset email
+def passwordResetEmail(email):
+    msg = Message('Password Reset', sender='luckyfoot028@gmail.com"', recipients=[email])
+    msg.subject = "Taskhub Password Reset"
+    msg.body = 'Click the following link to reset your password: http://127.0.0.1:5000/passwordReset'
+    mail.send(msg)

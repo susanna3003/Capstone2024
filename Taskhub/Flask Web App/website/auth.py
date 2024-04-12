@@ -1,6 +1,9 @@
 import uuid
-from flask import Blueprint, session, render_template, request, flash, redirect, url_for
+
+from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for
 from flask_mail import Message
+from datetime import date
+
 import sqlite3, re
 from website import mail
 auth = Blueprint('auth', __name__)
@@ -230,11 +233,38 @@ def updateEmail():
     return redirect(url_for('auth.userPage'))
 
 # Task Home
-@auth.route('/taskHome')
+@auth.route('/taskHome', methods=['GET', 'POST'])
 def taskHome():
-    return render_template("taskHome.html")
+    if request.method == 'POST':
+        userID = session.get('id')
+        taskName = request.form.get('taskName')
+        taskType = request.form.get('taskType')
+        dateDue = request.form.get('dateDue')
+        dateCreated = date.today()
+        description = request.form.get('taskDescription')
+        location = request.form.get('taskLocation')
+        invites = request.form.get('taskInvite')
+        reminder = request.form.get('taskRemind')
+        recurringTask = request.form.get('taskRecurr')
 
-# Task Home
+        # Connect to the database
+        conn = sqlite3.connect('taskDatabase.db')
+        cur = conn.cursor()
+
+        # Insert the user information into the database
+        cur.execute("INSERT INTO tasks (userId, name, taskType, deadline, creationDate, description, location, recurringTask) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateDue, dateCreated, description, location, recurringTask))
+        user_id = cur.lastrowid  # Get the ID of the inserted user
+        session['id'] = user_id
+
+        # Commit the changes and close the connection
+        conn.commit()
+        flash('Task created!', category='success')
+        session['logged_in'] = True
+        conn.close()
+    return render_template("taskHome.html")
+    return redirect(url_for('auth.calendar'))
+
+# Reminder Home
 @auth.route('/reminderHome')
 def reminderHome():
     return render_template("reminderHome.html")

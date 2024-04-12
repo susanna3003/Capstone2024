@@ -1,53 +1,86 @@
-
 {% extends "theme.html" %} {% block title %} Calendar: Taskhub {% endblock %}
 {% block content %} 
+<style>
+    #calendar {
+        margin: 0 auto; /* Center the calendar horizontally */
+        width: 80%; /* Adjust the width of the calendar container */
+    }
+</style>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script> <!-- Calendar Script -->
-    <div class="login-options">
-        <button class="login-button" onclick="showLoginForm('calendar')">Calendar</button>
-        <button class="login-button" onclick="showLoginForm('reminder')">Reminders</button>
-        <button class="login-button" onclick="showLoginForm('complete')">Completed Tasks</button>
+<div class="login-options">
+    <button class="login-button" onclick="showLoginForm('calendar')">Calendar</button>
+    <button class="login-button" onclick="showLoginForm('reminder')">Reminders</button>
+    <button class="login-button" onclick="showLoginForm('complete')">Completed Tasks</button>
+</div>
+
+<form class="login-form" id="calendarForm" style="display: none;">
+    <div id="calendar"></div>
+</form>
+
+<form class="login-form" id="reminderForm" style="display: none;">
+    <p>Reminders</p>
+</form>
+
+<form class="login-form" id="completeForm" style="display: none;">
+    <p>Completed Tasks</p>
+</form>
+
+<!-- Popup Modal -->
+<div class="modal fade" id="taskDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Task Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="taskName"></p>
+          <p id="taskDescription"></p>
+        </div>
+      </div>
     </div>
+  </div>
+<script>
+    function showLoginForm(type) {
+        const calendarForm = document.getElementById('calendarForm');
+        const reminderForm = document.getElementById('reminderForm');
+        const completeForm = document.getElementById('completeForm');
 
-    <form class="login-form" id="calendarForm" style="display: none;">
-        <div id="calendar"></div>
-    </form>
-
-    <form class="login-form" id="reminderForm" style="display: none;">
-        <p>Reminders</p>
-    </form>
-
-    <form class="login-form" id="completeForm" style="display: none;">
-        <p>Completed Tasks</p>
-    </form>
-
-    <script>
-        function showLoginForm(type) {
-            const calendarForm = document.getElementById('calendarForm');
-            const reminderForm = document.getElementById('reminderForm');
-            const completeForm = document.getElementById('completeForm');
-
-            if (type === 'calendar') {
-                calendarForm.style.display = 'flex';
-                reminderForm.style.display = 'none';
-                completeForm.style.display = 'none';
-            } else if (type === 'reminder') {
-                calendarForm.style.display = 'none';
-                reminderForm.style.display = 'flex';
-                completeForm.style.display = 'none';
-            } else if (type === 'complete') {
-                calendarForm.style.display = 'none';
-                reminderForm.style.display = 'none';
-                completeForm.style.display = 'flex';
-            }
+        if (type === 'calendar') {
+            calendarForm.style.display = 'flex';
+            reminderForm.style.display = 'none';
+            completeForm.style.display = 'none';
+        } else if (type === 'reminder') {
+            calendarForm.style.display = 'none';
+            reminderForm.style.display = 'flex';
+            completeForm.style.display = 'none';
+        } else if (type === 'complete') {
+            calendarForm.style.display = 'none';
+            reminderForm.style.display = 'none';
+            completeForm.style.display = 'flex';
         }
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                height: '800px',
-                aspectRatio: 2
-        });
-        calendar.render();
-      });
-    </script>
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            navLinks: true,
+            height: '800px',
+            events: '/getTasks',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            eventClick: function(info) 
+            {
+                var taskName = info.event.title;
+                var taskDescription = info.event.extendedProps.description;
+                $('#taskName').text('Task Name: ' + taskName);
+                $('#taskDescription').text('Description: ' + taskDescription);
+                $('#taskDetailsModal').modal('show');
+            }
+    });
+    calendar.render();
+    });
+</script>
 {% endblock %}

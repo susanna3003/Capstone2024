@@ -233,11 +233,10 @@ def updateEmail():
     return redirect(url_for('auth.userPage'))
 
 # Task Home
-@auth.route('/taskHome')
+@auth.route('/taskHome', methods=['GET', 'POST'])
 def taskHome():
     if request.method == 'POST':
         userID = session.get('id')
-        taskID = uuid.uuid4()
         taskName = request.form.get('taskName')
         taskType = request.form.get('taskType')
         dateDue = request.form.get('dateDue')
@@ -253,7 +252,7 @@ def taskHome():
         cur = conn.cursor()
 
         # Insert the user information into the database
-        cur.execute("INSERT INTO tasks (taskID, userId, name, taskType, deadline, creationDate, description, location, recurringTask) VALUES (?, ?, ?, ?, ?, ?, ?)", (taskID, userID, taskName, taskType, dateDue, dateCreated, description, location, recurringTask))
+        cur.execute("INSERT INTO tasks (userId, name, taskType, deadline, creationDate, description, location, recurringTask) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateDue, dateCreated, description, location, recurringTask))
         user_id = cur.lastrowid  # Get the ID of the inserted user
         session['id'] = user_id
 
@@ -263,6 +262,7 @@ def taskHome():
         session['logged_in'] = True
         conn.close()
     return render_template("taskHome.html")
+    return redirect(url_for('auth.calendar'))
 
 # Reminder Home
 @auth.route('/reminderHome')

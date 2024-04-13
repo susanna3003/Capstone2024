@@ -1,6 +1,6 @@
 import uuid
 
-from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for
+from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for, jsonify
 from flask_mail import Message
 from datetime import date
 
@@ -64,18 +64,22 @@ def sign_up():
             conn = sqlite3.connect('userDatabase.db')
             cur = conn.cursor()
 
-            # Insert the user information into the database
-            cur.execute("INSERT INTO users (firstname, lastName, email, userPass, username, phoneNum, accountType) VALUES (?, ?, ?, ?, ?, ?, ?)", (firstName, lastName, email, password, username, phoneNum, accountType))
-            user_id = cur.lastrowid  # Get the ID of the inserted user
-            session['id'] = user_id
-
-            # Commit the changes and close the connection
-            conn.commit()
-            flash('Account created!', category='success')
-            session['logged_in'] = True
-            session['show_account_type_popup'] = True
-            conn.close()
-            return redirect(url_for("auth.userPage"))
+            # Checking if email is already in use. 
+            cur.execute("SELECT COUNT(*) FROM users WHERE email = ?", (email,))
+            existing_email_count = cur.fetchone()[0]
+            if existing_email_count > 0:
+                flash('Email already exists. Please choose a different email address.', category='error')
+            else:
+                # Insert the user information into the database
+                cur.execute("INSERT INTO users (firstname, lastName, email, userPass, username, phoneNum, accountType) VALUES (?, ?, ?, ?, ?, ?, ?)", (firstName, lastName, email, password, username, phoneNum, accountType))
+                user_id = cur.lastrowid  # Get the ID of the inserted user
+                session['id'] = user_id
+                conn.commit()
+                flash('Account created!', category='success')
+                session['logged_in'] = True
+                session['show_account_type_popup'] = True
+                conn.close()
+                return redirect(url_for("auth.userPage"))
     return render_template("signUp.html")
     
 #   About Page
@@ -152,6 +156,26 @@ def logout():
 def calendar():
     return render_template("calendar.html")
 
+#   Retrieving tasks
+@auth.route('/getTasks')
+def get_tasks():
+    user_id = session.get('id')
+    conn = sqlite3.connect('taskDatabase.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM tasks WHERE userId = ?", (user_id,))
+    tasks = cur.fetchall()
+    conn.close()
+    events = []
+    for task in tasks:
+        event = {
+            'id': task[0],  # Task ID
+            'title': task[1],  # Task name
+            'start': task[4],  # Task deadline
+            'description': task[5],  # Task description
+        }
+        events.append(event)
+    return jsonify(events)
+
 #   Preferences Route
 @auth.route('/preferences')
 def preferences():
@@ -172,6 +196,14 @@ def delete_account():
         conn = sqlite3.connect('userDatabase.db')
         cur = conn.cursor()
         cur.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+        cur.execute("DELETE FROM Student WHERE userId = ?", (user_id,))
+        cur.execute("DELETE FROM Parent WHERE userId = ?", (user_id,))
+        cur.execute("DELETE FROM Teacher WHERE userId = ?", (user_id,))
+        conn.close()
+        conn = sqlite3.connect('taskDatabase.db')
+        cur = conn.cursor()
+        cur.execute("DELETE FROM tasks WHERE userId = ?", (user_id,))
         conn.commit()
         conn.close()
 
@@ -252,7 +284,7 @@ def taskHome():
         cur = conn.cursor()
 
         # Insert the user information into the database
-        cur.execute("INSERT INTO tasks (userId, name, taskType, deadline, creationDate, description, location, recurringTask) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateDue, dateCreated, description, location, recurringTask))
+        cur.execute("INSERT INTO tasks (userId, name, taskType, creationDate, deadline, description, recurringTask, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateCreated, dateDue, description, recurringTask, location))
         user_id = cur.lastrowid  # Get the ID of the inserted user
         session['id'] = user_id
 
@@ -261,8 +293,9 @@ def taskHome():
         flash('Task created!', category='success')
         session['logged_in'] = True
         conn.close()
+        return redirect(url_for('auth.calendar'))
     return render_template("taskHome.html")
-    return redirect(url_for('auth.calendar'))
+    
 
 # Reminder Home
 @auth.route('/reminderHome')

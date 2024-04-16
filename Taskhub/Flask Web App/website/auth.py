@@ -169,9 +169,9 @@ def get_tasks():
     for task in tasks:
         event = {
             'id': task[0],  # Task ID
-            'title': task[1],  # Task name
-            'start': task[4],  # Task deadline
-            'description': task[5],  # Task description
+            'title': task[2],  # Task name
+            'start': task[5],  # Task deadline
+            'description': task[6],  # Task description
         }
         events.append(event)
     return jsonify(events)
@@ -270,8 +270,10 @@ def taskHome():
     if request.method == 'POST':
         userID = session.get('id')
         taskName = request.form.get('taskName')
+        print("Task Name:", taskName)
         taskType = request.form.get('taskType')
         dateDue = request.form.get('dateDue')
+        print("deadline:", dateDue)
         dateCreated = date.today()
         description = request.form.get('taskDescription')
         location = request.form.get('taskLocation')
@@ -284,7 +286,7 @@ def taskHome():
         cur = conn.cursor()
 
         # Insert the user information into the database
-        cur.execute("INSERT INTO tasks (userId, name, taskType, creationDate, deadline, description, recurringTask, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateCreated, dateDue, description, recurringTask, location))
+        cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateCreated, dateDue, description, recurringTask, location))
         user_id = cur.lastrowid  # Get the ID of the inserted user
         session['id'] = user_id
 

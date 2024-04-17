@@ -270,10 +270,8 @@ def taskHome():
     if request.method == 'POST':
         userID = session.get('id')
         taskName = request.form.get('taskName')
-        print("Task Name:", taskName)
         taskType = request.form.get('taskType')
         dateDue = request.form.get('dateDue')
-        print("deadline:", dateDue)
         dateCreated = date.today()
         description = request.form.get('taskDescription')
         location = request.form.get('taskLocation')
@@ -298,12 +296,38 @@ def taskHome():
         return redirect(url_for('auth.calendar'))
     return render_template("taskHome.html")
     
-
 # Reminder Home
 @auth.route('/reminderHome')
 def reminderHome():
     return render_template("reminderHome.html")
 
+# Week Review
+@auth.route('/weekReview', methods=['GET', 'POST'])
+def weekReview():
+    if request.method == 'POST':
+        userID = session.get('id')
+        reviewDate = date.today()
+        weekRating = request.form.get('weekRating')
+        weekDesc = request.form.get('weekDesc')
+        weekHigh = request.form.get('weekHigh')
+        weekLow = request.form.get('weekLow')
+        weekComment = request.form.get('weekComment')
+
+        # Connect to weekReview database
+        conn = sqlite3.connect('weekReview.db')
+        cur = conn.cursor()
+
+        # Insert the user information into the database
+        cur.execute("INSERT INTO weekReview (userID, reviewDate, weekRating, weekDesc, weekHigh, weekLow, weekComment) VALUES (?, ?, ?, ?, ?, ?, ?)", (userID, reviewDate, weekRating, weekDesc, weekHigh, weekLow, weekComment))
+        user_id = cur.lastrowid  # Get the ID of the inserted user
+        session['id'] = user_id
+
+        # Commit the changes and close the connection
+        conn.commit()
+        flash('Review Complete!', category='success')
+        conn.close()
+        return redirect(url_for('auth.userPage'))
+    return render_template("weekReview.html")
    #!!!!! Forgot Password Group !!!!!!#
 # Forgot Password Route
 @auth.route('/forgotPassword', methods=['GET', 'POST'])

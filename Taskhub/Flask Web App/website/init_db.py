@@ -22,3 +22,11 @@ with open('taskSchema.sql') as f:
         cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, location) VALUES ('id', 'taskName', 'taskType', 'creationDate', 'dateDue', 'description', 'recurringTask', 'location')")
         connection.commit()
 connection.close()
+
+connection = sqlite3.connect('weekReview.db')
+with open('weekReview.sql') as f:
+        connection.executescript(f.read())
+        cur = connection.cursor()
+        cur.execute("INSERT INTO weekReview (userID, reviewDate, weekRating, weekDesc, weekHigh, weekLow, weekComment) VALUES (?, ?, ?, ?, ?, ?,?)", ('userID', 'reviewDate', 'weekRating', 'weekDesc', 'weekHigh', 'weekLow', 'weekComment'))
+        connection.commit()
+connection.close()

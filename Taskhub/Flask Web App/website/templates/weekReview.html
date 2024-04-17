@@ -1,0 +1,59 @@
+{% extends "theme.html" %} {% block title %} User Page: Taskhub {% endblock %}
+<style>
+    .range-wrapper {
+    position: relative;
+}
+
+#rangeValue {
+    position: absolute;
+    top: -30px; /* Adjust this value to position the number */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px; /* Adjust the font size as needed */
+}
+
+</style>
+{% block content %} 
+<h1>Week Review</h1>
+<form method = "POST">
+    <div style="text-align: center;" name="weekRate">
+        <label for="weekRating" class="form-label">How would you rate your day?</label>
+        <div class="range-wrapper">
+            <input type="range" class="form-range" min="1" max="5" step="1" id="weekRating">
+            <output id="rangeValue">0</output>
+        </div>
+    </div>
+    <input type="hidden" id="weekRatingInput" name="weekRating">
+    <div>
+        <label for="exampleTextarea" class="form-label mt-4">Why would you rate the week this number?</label>
+        <textarea class="form-control" id="exampleTextarea" rows="3" spellcheck="false" name="weekDesc"></textarea>
+    </div>
+    <div>
+        <label for="exampleTextarea" class="form-label mt-4">Were there any highs this week?</label>
+        <textarea class="form-control" id="exampleTextarea" rows="3" spellcheck="false" name="weekHigh"></textarea>
+    </div>
+    <div>
+        <label for="exampleTextarea" class="form-label mt-4">Were there any lows this week?</label>
+        <textarea class="form-control" id="exampleTextarea" rows="3" spellcheck="false"name="weekLow"></textarea>
+    </div>
+    <div>
+        <label for="exampleTextarea" class="form-label mt-4">Have any last comments about the week?</label>
+        <textarea class="form-control" id="exampleTextarea" rows="3" spellcheck="false"name="weekComment"></textarea>
+    </div>
+    </br>
+    
+    <button type = "submit" class = "btn btn-primary">Submit</button>
+</form>
+<script>
+    // Get the range input element
+    var rangeInput = document.getElementById('weekRating');
+    var rangeValue = document.getElementById('rangeValue');
+    var weekRatingInput = document.getElementById('weekRatingInput');
+    rangeValue.textContent = rangeInput.value;
+    rangeInput.addEventListener('input', function() 
+    {
+        rangeValue.textContent = this.value;
+        weekRatingInput.value = this.value;
+    });
+</script>
+{% endblock %}

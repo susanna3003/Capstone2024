@@ -12,3 +12,18 @@ CREATE TABLE tasks (
     location TEXT, 
     FOREIGN KEY (userId) REFERENCES User(id)
 );
+
+DROP TABLE IF EXISTS reminders;
+
+CREATE TABLE reminders (
+    reminderID INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER,
+    reminderName TEXT,
+    reminderType TEXT, 
+    creationDate DATE, 
+    dateDue DATE, 
+    description TEXT, 
+    recurringReminder TEXT, 
+    location TEXT, 
+    FOREIGN KEY (userId) REFERENCES User(id)
+);

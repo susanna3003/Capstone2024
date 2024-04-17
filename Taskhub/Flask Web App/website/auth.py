@@ -8,6 +8,13 @@ import sqlite3, re
 from website import mail
 auth = Blueprint('auth', __name__)
 
+# define global variables 
+tasksExist = 0
+taskCount = 0
+remindersExist = 0
+reminderCount = 0
+username = ''
+
 #   Login Page
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -35,6 +42,7 @@ def login():
 #   SignUp page
 @auth.route('/signUp', methods=['GET', 'POST'])
 def sign_up():
+    global username
     if request.method == 'POST':
         email = request.form.get('email')
         firstName = request.form.get('firstName')
@@ -159,6 +167,7 @@ def calendar():
 #   Retrieving tasks
 @auth.route('/getTasks')
 def get_tasks():
+    global tasksExist, taskCount
     user_id = session.get('id')
     conn = sqlite3.connect('taskDatabase.db')
     cur = conn.cursor()
@@ -166,12 +175,37 @@ def get_tasks():
     tasks = cur.fetchall()
     conn.close()
     events = []
+    tasksExist = 1 if tasks else 0
+    taskCount = len(tasks)
     for task in tasks:
         event = {
             'id': task[0],  # Task ID
             'title': task[2],  # Task name
             'start': task[5],  # Task deadline
             'description': task[6],  # Task description
+        }
+        events.append(event)
+    return jsonify(events)
+
+#   Retrieving reminders
+@auth.route('/getReminders')
+def get_reminders():
+    global remindersExist, reminderCount
+    user_id = session.get('id')
+    conn = sqlite3.connect('taskDatabase.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM reminders WHERE userId = ?", (user_id,))
+    reminders = cur.fetchall()
+    conn.close()
+    events = []
+    remindersExist = 1 if reminders else 0
+    reminderCount = len(reminders)
+    for reminder in reminders:
+        event = {
+            'id': reminder[0],  # Reminder ID
+            'title': reminder[2],  # Reminder name
+            'start': reminder[5],  # Reminder deadline
+            'description': reminder[6],  # Reminder description
         }
         events.append(event)
     return jsonify(events)
@@ -267,6 +301,7 @@ def updateEmail():
 # Task Home
 @auth.route('/taskHome', methods=['GET', 'POST'])
 def taskHome():
+    global username, tasksExist, taskCount
     if request.method == 'POST':
         userID = session.get('id')
         taskName = request.form.get('taskName')
@@ -294,11 +329,37 @@ def taskHome():
         session['logged_in'] = True
         conn.close()
         return redirect(url_for('auth.calendar'))
-    return render_template("taskHome.html")
+    return render_template("taskHome.html", username=username, tasksExist=tasksExist, taskCount=taskCount)
     
 # Reminder Home
-@auth.route('/reminderHome')
+@auth.route('/reminderHome', methods=['GET', 'POST'])
 def reminderHome():
+    if request.method == 'POST':
+        userID = session.get('id')
+        reminderName = request.form.get('reminderName')
+        reminderType = request.form.get('reminderType')
+        dateDue = request.form.get('dateDue')
+        dateCreated = date.today()
+        description = request.form.get('reminderDescription')
+        location = request.form.get('reminderLocation')
+        invites = request.form.get('reminderInvite')
+        recurringReminder = request.form.get('reminderRecurr')
+
+        # Connect to the database
+        conn = sqlite3.connect('taskDatabase.db')
+        cur = conn.cursor()
+
+        # Insert the user information into the database
+        cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateCreated, dateDue, description, recurringTask, location))
+        user_id = cur.lastrowid  # Get the ID of the inserted user
+        session['id'] = user_id
+
+        # Commit the changes and close the connection
+        conn.commit()
+        flash('Reminder created!', category='success')
+        session['logged_in'] = True
+        conn.close()
+        return redirect(url_for('auth.calendar'))
     return render_template("reminderHome.html")
 
 # Week Review
@@ -329,6 +390,7 @@ def weekReview():
         return redirect(url_for('auth.userPage'))
     return render_template("weekReview.html")
    #!!!!! Forgot Password Group !!!!!!#
+
 # Forgot Password Route
 @auth.route('/forgotPassword', methods=['GET', 'POST'])
 def forgot_password():

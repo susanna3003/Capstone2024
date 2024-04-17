@@ -125,8 +125,16 @@ input[type=submit]:hover
 }
 </style>
 
-<h1>My Tasks</h1>
-<p>This is where user tasks will be listed. It looks like your tasks are empty right now!</p>
+<h1>{{ username }}'s Tasks</h1>
+{% if tasksExist == 1 %}
+  {% if taskCount == 1 %}
+    <h3>{{ taskCount }} current task.</h3>
+  {% elif taskCount > 1 %}
+    <h3>{{ taskCount }} current tasks.</h3>
+  {% elif taskCount == 0 %}
+    <h3>You do not have any current tasks.</h3>
+  {% endif %}
+{% endif %}
 
 <p align="right"><button id="createTaskButton" onclick="openModal()">Create Task</button></p>
 
@@ -139,6 +147,7 @@ input[type=submit]:hover
       <label for="taskName">Task name: </label>
       <input type="text" id="taskName" name = "taskName" placeholder="Task Name" required><br>
       <br>
+      
       <!--- task type --->
       <label for="taskType">Task type: </label>
       <select id="taskType" name="taskType" required>
@@ -193,7 +202,7 @@ input[type=submit]:hover
 
 <div>
   <br>
-  <p id="rcorners1">{{taskName}}</p>
+  <p id="rcorners1">{{ taskName }}</p>
 </div>
   
 <!--- <script src="script.js"></script> --->

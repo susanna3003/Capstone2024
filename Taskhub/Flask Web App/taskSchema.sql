@@ -1,14 +1,29 @@
 DROP TABLE IF EXISTS tasks;
 
 CREATE TABLE tasks (
-    taskID INTEGER PRIMARY KEY,
+    taskID INTEGER PRIMARY KEY AUTOINCREMENT,
     userId INTEGER,
-    name TEXT,
+    taskName TEXT,
     taskType TEXT, 
     creationDate DATE, 
-    deadline DATE, 
+    dateDue DATE, 
     description TEXT, 
-    recurringTask INTEGER, 
+    recurringTask TEXT, 
+    location TEXT, 
+    FOREIGN KEY (userId) REFERENCES User(id)
+);
+
+DROP TABLE IF EXISTS reminders;
+
+CREATE TABLE reminders (
+    reminderID INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER,
+    reminderName TEXT,
+    reminderType TEXT, 
+    creationDate DATE, 
+    dateDue DATE, 
+    description TEXT, 
+    recurringReminder TEXT, 
     location TEXT, 
     FOREIGN KEY (userId) REFERENCES User(id)
 );

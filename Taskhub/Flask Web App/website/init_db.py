@@ -19,6 +19,22 @@ connection = sqlite3.connect('taskDatabase.db')
 with open('taskSchema.sql') as f:
         connection.executescript(f.read())
         cur = connection.cursor()
-        cur.execute("INSERT INTO tasks (taskID, userId, name, taskType, creationDate, deadline, description, recurringTask, location) VALUES ('taskID', 'id', 'name', 'taskType', 'creationDate', 'deadline', 'description', 'recurringTask', 'location')")
+        cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, location) VALUES ('id', 'taskName', 'taskType', 'creationDate', 'dateDue', 'description', 'recurringTask', 'location')")
+        connection.commit()
+connection.close()
+
+connection = sqlite3.connect('taskDatabase.db')
+with open('taskSchema.sql') as f:
+        connection.executescript(f.read())
+        cur = connection.cursor()
+        cur.execute("INSERT INTO reminders (userId, reminderName, reminderType, creationDate, dateDue, description, recurringReminder, location) VALUES ('id', 'reminderName', 'reminderType', 'creationDate', 'dateDue', 'description', 'recurringReminder', 'location')")
+        connection.commit()
+connection.close()
+
+connection = sqlite3.connect('weekReview.db')
+with open('weekReview.sql') as f:
+        connection.executescript(f.read())
+        cur = connection.cursor()
+        cur.execute("INSERT INTO weekReview (userID, reviewDate, weekRating, weekDesc, weekHigh, weekLow, weekComment) VALUES (?, ?, ?, ?, ?, ?,?)", ('userID', 'reviewDate', 'weekRating', 'weekDesc', 'weekHigh', 'weekLow', 'weekComment'))
         connection.commit()
 connection.close()

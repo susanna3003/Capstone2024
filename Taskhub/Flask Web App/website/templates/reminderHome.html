@@ -137,6 +137,16 @@ input[type=submit]:hover
         <label for="reminderName">Reminder name: </label>
         <input type="text" id="reminderName" placeholder="Reminder Name" required><br>
 
+        <!--- reminder type --->
+        <label for="reminderType">Reminder type: </label>
+        <select id="reminderType" name="reminderType" required>
+          <option value="choose">Please choose a type</option>
+          <option value="Appointment">Appointment</option>
+          <option value="Event">Event</option>
+          <option value="Task Reminder Study">Task Reminder</option>
+          <option value="Other">Other</option>
+        </select><br>
+
         <br>
       <!--- reminder date --->
         <label for="dateDue">Date due: </label>

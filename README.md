@@ -10,6 +10,7 @@ cd Flask\ Web\ App/
 **check that your app is here, it's main.py so it's called main**
 
 pip install flask
+pip install flask_mail
 
  **or use requirements.txt**
 

@@ -21,14 +21,19 @@
         opacity: 0;
     }
 
+    .button-container 
+    {
+    margin-top: 10px; /* Adjust as needed */
+    }
+
     .container 
     {
     text-align: center; /* Centers content horizontally */
     }
 
-    .button-container 
-    {
-    margin-top: 10px; /* Adjust as needed */
+    .disabled-btn {
+    pointer-events: none;
+    opacity: 0.5;
     }
 
     #accessTaskButton,
@@ -150,7 +155,8 @@
                 </section>
                 <section>
                     <h2>Weekly Review</h2>
-                    <p>How was your day? Don't forget to fill out your weekly report!.</p>
+                    <p>How was your day? Don't forget to fill out your weekly report!</p>
+                    <a href="{{ url_for('auth.weekReview') }}"><button id="weekly-review-btn" class="btn btn-primary btn-lg {% if disableBtn %}disabled-btn{% endif %}" {% if disableBtn %}disabled{% endif %}><strong>Weekly Review</strong></button></a>
                 </section>
             </main>
         </div>
@@ -181,6 +187,5 @@
         });
     });
 });
-
 </script>
 {% endblock %}

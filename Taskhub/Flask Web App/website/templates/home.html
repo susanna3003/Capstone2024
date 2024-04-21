@@ -86,5 +86,8 @@
 <h2>With Taskhub, task management has never 
   been easier or more efficient. Join the countless individuals and teams already experiencing the 
   benefits of Taskhub and take control of your tasks today!</h2>
-<button type="button" class="btn btn-primary btn-lg"><strong>Sign Up!</strong></button>
+<form action ="{{ url_for('auth.sign_up') }}">
+  <button type="submit" class="btn btn-primary btn-lg"><strong>Sign Up!</strong></button>
+</form>
+
 {% endblock %}

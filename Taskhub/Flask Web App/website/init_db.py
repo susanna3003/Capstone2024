@@ -1,5 +1,4 @@
 import sqlite3
-
 connection = sqlite3.connect('userDatabase.db')
 with open('schema.sql') as f:
         connection.executescript(f.read())
@@ -27,6 +26,6 @@ connection = sqlite3.connect('weekReview.db')
 with open('weekReview.sql') as f:
         connection.executescript(f.read())
         cur = connection.cursor()
-        cur.execute("INSERT INTO weekReview (userID, reviewDate, weekRating, weekDesc, weekHigh, weekLow, weekComment) VALUES (?, ?, ?, ?, ?, ?,?)", ('userID', 'reviewDate', 'weekRating', 'weekDesc', 'weekHigh', 'weekLow', 'weekComment'))
+        cur.execute("INSERT INTO weekReview (userID, submissionDate, weekRating, weekDesc, weekHigh, weekLow, weekComment) VALUES (?, ?, ?, ?, ?, ?,?)", ('userID', 'submissionDate', 'weekRating', 'weekDesc', 'weekHigh', 'weekLow', 'weekComment'))
         connection.commit()
 connection.close()

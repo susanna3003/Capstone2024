@@ -1,11 +1,10 @@
-import uuid
-
-from flask import Blueprint, app, session, render_template, request, flash, redirect, url_for, jsonify
+import uuid, sqlite3, re
+from flask import Blueprint, session, render_template, request, flash, redirect, url_for, jsonify
 from flask_mail import Message
 from datetime import date
-
-import sqlite3, re
+from datetime import datetime, timedelta
 from website import mail
+
 auth = Blueprint('auth', __name__)
 
 #   Login Page
@@ -56,10 +55,9 @@ def sign_up():
             flash('Passwords don\'t match!', category='error')
         elif len(password) < 7:
             flash('Password must be at least 7 characters', category='error')
-        elif not re.match(r'^\d{3}-\d{3}-\d{4}$', phoneNum):
-            flash('Phone number must be in the format XXX-XXX-XXXX', category='error')
+        elif not re.match(r'^(\d{10}|\d{3}-\d{3}-\d{4})$', phoneNum):
+            flash('Phone number must be in the format XXX-XXX-XXXX or XXXXXXXXXX', category='error')
         else:
-
             # Connect to the database
             conn = sqlite3.connect('userDatabase.db')
             cur = conn.cursor()
@@ -90,19 +88,28 @@ def about():
 #   user Page
 @auth.route('/userPage', methods=['GET','POST'])
 def userPage():
-    # Check if the user's account type is set
-
-    #if request.method == 'POST':
     user_id = session.get('id')
     conn = sqlite3.connect('userDatabase.db')
     cur = conn.cursor()
-    cur.execute("SELECT accountType FROM users WHERE id = ?", (user_id,))
     cur.execute("SELECT username FROM users WHERE id = ?", (user_id,))
     user_data = cur.fetchone()
-    username = user_data[0] if user_data else "User"
     conn.close()
+    username = user_data[0] if user_data else "User"
+    disableBtn = False
     show_account_type_popup = session.get('show_account_type_popup', False)
-    return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username = username)
+    
+    #   Check when user submitted weekly Review
+    if user_id:
+        conn = sqlite3.connect('weekReview.db')
+        cur = conn.cursor()
+        cur.execute("SELECT MAX(submissionDate) FROM weekReview WHERE userId = ?", (user_id,))
+        submissionDate = cur.fetchone()[0]
+        conn.close()
+        if submissionDate:
+            submissionDate = datetime.strptime(submissionDate, '%Y-%m-%d')
+            if submissionDate + timedelta(days=7) > datetime.now():
+                disableBtn = True
+    return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username = username, disableBtn=disableBtn)
 
 #   account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])
@@ -207,6 +214,12 @@ def delete_account():
         conn.commit()
         conn.close()
 
+        conn = sqlite3.connect('weekReview.db')
+        cur = conn.cursor()
+        cur.execute("DELETE FROM weekReview WHERE userId = ?", (user_id,))
+        conn.commit()
+        conn.close()
+
         # Clear the session
         session.clear()
 
@@ -285,8 +298,6 @@ def taskHome():
 
         # Insert the user information into the database
         cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateCreated, dateDue, description, recurringTask, location))
-        user_id = cur.lastrowid  # Get the ID of the inserted user
-        session['id'] = user_id
 
         # Commit the changes and close the connection
         conn.commit()
@@ -306,7 +317,7 @@ def reminderHome():
 def weekReview():
     if request.method == 'POST':
         userID = session.get('id')
-        reviewDate = date.today()
+        submissionDate = date.today()
         weekRating = request.form.get('weekRating')
         weekDesc = request.form.get('weekDesc')
         weekHigh = request.form.get('weekHigh')
@@ -318,9 +329,7 @@ def weekReview():
         cur = conn.cursor()
 
         # Insert the user information into the database
-        cur.execute("INSERT INTO weekReview (userID, reviewDate, weekRating, weekDesc, weekHigh, weekLow, weekComment) VALUES (?, ?, ?, ?, ?, ?, ?)", (userID, reviewDate, weekRating, weekDesc, weekHigh, weekLow, weekComment))
-        user_id = cur.lastrowid  # Get the ID of the inserted user
-        session['id'] = user_id
+        cur.execute("INSERT INTO weekReview (userID, submissionDate, weekRating, weekDesc, weekHigh, weekLow, weekComment) VALUES (?, ?, ?, ?, ?, ?, ?)", (userID, submissionDate, weekRating, weekDesc, weekHigh, weekLow, weekComment))
 
         # Commit the changes and close the connection
         conn.commit()
@@ -328,6 +337,7 @@ def weekReview():
         conn.close()
         return redirect(url_for('auth.userPage'))
     return render_template("weekReview.html")
+
    #!!!!! Forgot Password Group !!!!!!#
 # Forgot Password Route
 @auth.route('/forgotPassword', methods=['GET', 'POST'])

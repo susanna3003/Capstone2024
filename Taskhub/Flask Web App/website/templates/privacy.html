@@ -62,7 +62,28 @@
                         <button type="submit" class="btn btn-primary btn-lg"><strong>Update Password</strong></button>
                     </form>
                     <h2>Delete Account</h2>
-                    <button id="delete-account-btn" class="btn btn-danger">Delete Account</button>
+                    <button id="delete-account-btn" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal">Delete Account</button>
+                    <!-- Delete Account Modal -->
+                    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Account Deletion</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete your account? This action cannot be undone.
+                                </div>
+                                <div class="modal-footer">
+                                    <form id="delete-account-form" method="POST" action="/delete-account">
+                                        <button type="submit" class="btn btn-danger">Delete Account</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             </main>
         </div>
@@ -72,15 +93,11 @@
 <!--Account Deletion Script-->
 <script>
     document.getElementById('delete-account-btn').addEventListener('click', function() {
-    // Confirmation dialog
-    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-        // Creating a hidden form to submit the request
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/delete-account';
-        document.body.appendChild(form);
-        form.submit();
-    }
-});
+        event.preventDefault(); // Prevent form submission
+        $('#confirmDeleteModal').modal('show'); // Show the modal
+    });
+    $('#confirmDeleteModal').on('hidden.bs.modal', function () {
+        $('#delete-account-form').trigger('reset'); // Reset form fields
+    });
 </script>
 {% endblock %}

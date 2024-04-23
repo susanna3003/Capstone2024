@@ -157,6 +157,7 @@
                     <h2>Weekly Review</h2>
                     <p>How was your day? Don't forget to fill out your weekly report!</p>
                     <a href="{{ url_for('auth.weekReview') }}"><button id="weekly-review-btn" class="btn btn-primary btn-lg {% if disableBtn %}disabled-btn{% endif %}" {% if disableBtn %}disabled{% endif %}><strong>Weekly Review</strong></button></a>
+                    <a href="{{ url_for('auth.viewWeekReview') }}"><button class="btn btn-primary btn-lg"><strong>View Past Entries</strong></button></a>
                 </section>
             </main>
         </div>

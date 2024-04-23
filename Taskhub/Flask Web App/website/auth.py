@@ -111,6 +111,33 @@ def userPage():
                 disableBtn = True
     return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username = username, disableBtn=disableBtn)
 
+# Week Review viewer
+@auth.route('/viewWeekReview')
+def viewWeekReview():
+    return render_template("viewWeekReview.html")
+
+# retireving week Reviews
+@auth.route('/getReviews')
+def getReviews():
+    user_id = session.get('id')
+    conn = sqlite3.connect('weekReview.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM weekReview WHERE userId = ?", (user_id,))
+    reviewsData = cur.fetchall()
+    conn.close()
+    reviews = []
+    for review in reviewsData:
+        reviewDictionary = {
+            'date': review[2],  # date
+            'rating': review[3],  # review rating
+            'description': review[4],  # review description
+            'weekHigh': review[5],  # review high
+            'weekLow': review[6],  # review low
+            'comment': review[7],  # review comment
+        }
+        reviews.append(reviewDictionary)
+    return jsonify(reviews)
+
 #   account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])
 def save_account_type():

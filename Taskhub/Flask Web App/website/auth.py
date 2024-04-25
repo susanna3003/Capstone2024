@@ -337,12 +337,10 @@ def reminderHome():
     if request.method == 'POST':
         userID = session.get('id')
         reminderName = request.form.get('reminderName')
-        reminderType = request.form.get('reminderType')
-        dateDue = request.form.get('dateDue')
+        reminderDate = request.form.get('dateDue')
         dateCreated = date.today()
-        description = request.form.get('reminderDescription')
+        reminderDesc = request.form.get('reminderDescription')
         location = request.form.get('reminderLocation')
-        invites = request.form.get('reminderInvite')
         recurringReminder = request.form.get('reminderRecurr')
 
         # Connect to the database
@@ -350,7 +348,7 @@ def reminderHome():
         cur = conn.cursor()
 
         # Insert the user information into the database
-        cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateCreated, dateDue, description, recurringTask, location))
+        cur.execute("INSERT INTO reminders (userId, reminderName, creationDate, reminderDate, reminderDesc, recurringReminder, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, reminderName, dateCreated, reminderDate, reminderDesc, recurringReminder, location))
         user_id = cur.lastrowid  # Get the ID of the inserted user
         session['id'] = user_id
 

@@ -22,7 +22,7 @@ CREATE TABLE reminders (
     reminderType TEXT, 
     creationDate DATE, 
     dateDue DATE, 
-    description TEXT, 
+    reminderDesc TEXT, 
     recurringReminder TEXT, 
     location TEXT, 
     FOREIGN KEY (userId) REFERENCES User(id)

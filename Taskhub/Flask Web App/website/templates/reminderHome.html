@@ -123,8 +123,16 @@ input[type=submit]:hover
 }
 </style>
 
-<h1>My Reminders</h1>
-<p>This is where user reminders will be listed. It looks like your reminders are empty right now!</p>
+<h1>{{ username }}'s Reminders</h1>
+{% if remindersExist == 1 %}
+  {% if reminderCount == 1 %}
+    <h3>{{ reminderCount }} current reminder.</h3>
+  {% elif reminderCount > 1 %}
+    <h3>{{ reminderCount }} current reminders.</h3>
+  {% elif reminderCount == 0 %}
+    <h3>You do not have any current reminders.</h3>
+  {% endif %}
+{% endif %}
 
 <p align="right"><button id="createReminderButton" onclick="openModal()">Create Reminder</button></p>
 
@@ -136,16 +144,6 @@ input[type=submit]:hover
         <!--- reminder name --->
         <label for="reminderName">Reminder name: </label>
         <input type="text" id="reminderName" placeholder="Reminder Name" required><br>
-
-        <!--- reminder type --->
-        <label for="reminderType">Reminder type: </label>
-        <select id="reminderType" name="reminderType" required>
-          <option value="choose">Please choose a type</option>
-          <option value="Appointment">Appointment</option>
-          <option value="Event">Event</option>
-          <option value="Task Reminder Study">Task Reminder</option>
-          <option value="Other">Other</option>
-        </select><br>
 
         <br>
       <!--- reminder date --->

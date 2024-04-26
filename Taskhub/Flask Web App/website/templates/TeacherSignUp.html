@@ -1,0 +1,55 @@
+{% extends "theme.html" %}
+{% block title %} Teacher Sign Up: Taskhub {% endblock %}
+
+{% block content %}
+<form method="POST">
+    <h3 align="center">Teacher Sign Up</h3>
+    <div class="form-group">
+        <label for="teacherName">Teacher Name</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="teacherName"
+            name="teacherName"
+            required
+            placeholder="Enter teacher's name"
+        />
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+            type="email" 
+            class="form-control" 
+            id="email"
+            name="email"
+            required
+            placeholder="Enter email"
+        />
+    </div>
+    <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input 
+            type="tel" 
+            class="form-control" 
+            id="phone"
+            name="phone"
+            required
+            placeholder="Enter phone number"
+        />
+    </div>
+    <div class="form-group">
+        <label for="schoolSubject">School Subject</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="schoolSubject"
+            name="schoolSubject"
+            required
+            placeholder="Enter school subject"
+        />
+    </div>
+    <!-- Other existing form fields -->
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

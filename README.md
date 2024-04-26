@@ -11,6 +11,8 @@ cd Flask\ Web\ App/
 
 pip install flask
 
+pip install flask_mail
+
  **or use requirements.txt**
 
 flask --app main run --debug

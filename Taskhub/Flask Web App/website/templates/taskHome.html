@@ -130,7 +130,7 @@ input[type=submit]:hover
 
 <p align="right"><button id="createTaskButton" onclick="openModal()">Create Task</button></p>
 
-<div id="taskCreateForm" class="popup">
+<div id="taskCreateForm" class="popup" onsubmit="return validateForm()">
     <form class="popup-content" id="newTaskForm" method="POST">
       <span class="close">&times;</span>
       <h2>Task Creation</h2>
@@ -139,21 +139,19 @@ input[type=submit]:hover
       <label for="taskName">Task name: </label>
       <input type="text" id="taskName" name = "taskName" placeholder="Task Name" required><br>
       <br>
-      <!--- task type --->
+      <!-- task type --->
       <label for="taskType">Task type: </label>
       <select id="taskType" name="taskType" required>
         <option value="choose">Please choose a type</option>
-        <option value="Test/Quiz">Test/Quiz</option>
-        <option value="Homework">Homework</option>
-        <option value="Unassigned Study">Unassigned Study</option>
-        <option value="Misc">Miscellaneous</option>
+        {% for taskType in taskTypes %}
+            <option value="{{ taskType }}">{{ taskType }}</option>
+        {% endfor %}
       </select><br>
 
       <br>
-    <!--- task date --->
-      <label for="dateDue">Date due: </label>
-      <input type="date" id="dateDue" name="dateDue" required><br>
-
+    <!--- task date and time--->
+      <label for="datetimeDue">Date and time due:</label>
+      <input type="datetime-local" id="dateDue" name="dateDue" required><br>
       <br>
 
       <!--- optional --->
@@ -189,8 +187,9 @@ input[type=submit]:hover
 
       <br>
       <button type="submit">Submit</button>
+    </form>
 </div>
-
+<div id="alertMessage"></div>
 <div>
   <br>
   <p id="rcorners1">{{taskName}}</p>
@@ -222,19 +221,24 @@ input[type=submit]:hover
 <script>
   function validateForm() {
     // Get the value of the due date input
-    var dueDateInput = document.getElementById('dateDue').value;
+    var dueDateInput = new Date(document.getElementById('dateDue').value);
 
     // Get the current date
-    var currentDate = new Date().toISOString().slice(0, 10);
+    var currentDate = new Date();
 
     // Compare due date with current date
     if (dueDateInput <= currentDate) {
-      // Display error message
-      alert('Please enter a due date in the future.');
-      return false; // Prevent form submission
+        // Display error message
+        document.getElementById('alertMessage').innerHTML = 
+        `<div class="alert alert-dismissible alert-warning">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <h4 class="alert-heading">Warning!</h4>
+            <p class="mb-0">You can't create a task in the past! Try entering a current Date!</p>
+        </div>`;
+        return false; // Prevent form submission
     }
 
     return true; // Allow form submission
-  }
+}
 </script>
 {% endblock %}

@@ -111,6 +111,33 @@ def userPage():
                 disableBtn = True
     return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username = username, disableBtn=disableBtn)
 
+# Week Review viewer
+@auth.route('/viewWeekReview')
+def viewWeekReview():
+    return render_template("viewWeekReview.html")
+
+# retireving week Reviews
+@auth.route('/getReviews')
+def getReviews():
+    user_id = session.get('id')
+    conn = sqlite3.connect('weekReview.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM weekReview WHERE userId = ?", (user_id,))
+    reviewsData = cur.fetchall()
+    conn.close()
+    reviews = []
+    for review in reviewsData:
+        reviewDictionary = {
+            'date': review[2],  # date
+            'rating': review[3],  # review rating
+            'description': review[4],  # review description
+            'weekHigh': review[5],  # review high
+            'weekLow': review[6],  # review low
+            'comment': review[7],  # review comment
+        }
+        reviews.append(reviewDictionary)
+    return jsonify(reviews)
+
 #   account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])
 def save_account_type():
@@ -156,7 +183,7 @@ def generate_unique_student_id():
 @auth.route('/logout')
 def logout():
     session.pop('logged_in', None)  # Clear the session variable
-    return redirect(url_for('auth.login'))  # Redirect to the login page after logout
+    return redirect(url_for('auth.login'))
 
 #   Calendar Route
 @auth.route('/calendar')
@@ -280,6 +307,25 @@ def updateEmail():
 # Task Home
 @auth.route('/taskHome', methods=['GET', 'POST'])
 def taskHome():
+    if request.method == 'GET':
+        # Get the user's account type
+        userID = session.get('id')
+        conn = sqlite3.connect('userDatabase.db')
+        cur = conn.cursor()
+        cur.execute("SELECT accountType FROM users WHERE id=?", (userID,))
+        accountType = cur.fetchone()[0].lower()
+        conn.close()
+        print("AccountType: ", accountType)
+        # Define task types based on account type
+        if accountType == "parent":
+            taskTypes = ["Errand", "Extra Curricular", "Financial Management", "Health Care", "House Chores", "Medical Appointment", "School Event", "Shopping", "Special Occasions", "Transportation", "Misc"]
+        elif accountType == "teacher":
+            taskTypes = ["Classroom Management", "Extracurricular Activity", "Grading", "Lesson Planning", "Meeting", "Parent-Teacher Meeting", "Student Support", "Misc"]
+        elif accountType == "student":
+            taskTypes = ["Extra Curricular", "Homework Assignment", "Meeting", "Personal", "Project", "Studying Time", "Testing", "Misc"]
+        else:
+            taskTypes = ["Errands", "Extra Curricular", "Financial", "Health and Wellness", "Medical", "Personal", "Transportation", "Work-Related", "Misc"]
+        return render_template("taskHome.html", taskTypes=taskTypes)
     if request.method == 'POST':
         userID = session.get('id')
         taskName = request.form.get('taskName')

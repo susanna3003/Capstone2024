@@ -1,0 +1,70 @@
+{% extends "theme.html" %}
+{% block title %} Parent Sign Up: Taskhub {% endblock %}
+
+{% block content %}
+<form method="POST">
+    <h3 align="center">Parent Sign Up</h3>
+    <div class="form-group">
+        <label for="parentName">Parent Name</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="parentName"
+            name="parentName"
+            required
+            placeholder="Enter parent's name"
+        />
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+            type="email" 
+            class="form-control" 
+            id="email"
+            name="email"
+            required
+            placeholder="Enter email"
+        />
+    </div>
+    <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input 
+            type="tel" 
+            class="form-control" 
+            id="phone"
+            name="phone"
+            required
+            placeholder="Enter phone number"
+        />
+    </div>
+    <div class="form-group">
+        <label for="childName">Child's Name</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="childName"
+            name="childName"
+            required
+            placeholder="Enter child's name"
+        />
+    </div>
+    <div class="form-group">
+        <label for="childGrade">Child's Grade Level</label>
+        <select 
+            class="form-control" 
+            id="childGrade"
+            name="childGrade"
+            required
+        >
+            <option value="" disabled selected>Select child's grade level</option>
+            <option value="1">1st Grade</option>
+            <option value="2">2nd Grade</option>
+            <option value="3">3rd Grade</option>
+            <!-- Add more grade options as needed -->
+        </select>
+    </div>
+    <!-- Other existing form fields -->
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

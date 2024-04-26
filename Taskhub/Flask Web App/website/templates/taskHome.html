@@ -139,14 +139,13 @@ input[type=submit]:hover
       <label for="taskName">Task name: </label>
       <input type="text" id="taskName" name = "taskName" placeholder="Task Name" required><br>
       <br>
-      <!--- task type --->
+      <!-- task type --->
       <label for="taskType">Task type: </label>
       <select id="taskType" name="taskType" required>
         <option value="choose">Please choose a type</option>
-        <option value="Test/Quiz">Test/Quiz</option>
-        <option value="Homework">Homework</option>
-        <option value="Unassigned Study">Unassigned Study</option>
-        <option value="Misc">Miscellaneous</option>
+        {% for taskType in taskTypes %}
+            <option value="{{ taskType }}">{{ taskType }}</option>
+        {% endfor %}
       </select><br>
 
       <br>
@@ -188,6 +187,7 @@ input[type=submit]:hover
 
       <br>
       <button type="submit">Submit</button>
+    </form>
 </div>
 <div id="alertMessage"></div>
 <div>

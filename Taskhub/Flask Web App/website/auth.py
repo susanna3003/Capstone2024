@@ -183,7 +183,7 @@ def generate_unique_student_id():
 @auth.route('/logout')
 def logout():
     session.pop('logged_in', None)  # Clear the session variable
-    return redirect(url_for('auth.login'))  # Redirect to the login page after logout
+    return redirect(url_for('auth.login'))
 
 #   Calendar Route
 @auth.route('/calendar')
@@ -307,6 +307,25 @@ def updateEmail():
 # Task Home
 @auth.route('/taskHome', methods=['GET', 'POST'])
 def taskHome():
+    if request.method == 'GET':
+        # Get the user's account type
+        userID = session.get('id')
+        conn = sqlite3.connect('userDatabase.db')
+        cur = conn.cursor()
+        cur.execute("SELECT accountType FROM users WHERE id=?", (userID,))
+        accountType = cur.fetchone()[0].lower()
+        conn.close()
+        print("AccountType: ", accountType)
+        # Define task types based on account type
+        if accountType == "parent":
+            taskTypes = ["Errand", "Extra Curricular", "Financial Management", "Health Care", "House Chores", "Medical Appointment", "School Event", "Shopping", "Special Occasions", "Transportation", "Misc"]
+        elif accountType == "teacher":
+            taskTypes = ["Classroom Management", "Extracurricular Activity", "Grading", "Lesson Planning", "Meeting", "Parent-Teacher Meeting", "Student Support", "Misc"]
+        elif accountType == "student":
+            taskTypes = ["Extra Curricular", "Homework Assignment", "Meeting", "Personal", "Project", "Studying Time", "Testing", "Misc"]
+        else:
+            taskTypes = ["Errands", "Extra Curricular", "Financial", "Health and Wellness", "Medical", "Personal", "Transportation", "Work-Related", "Misc"]
+        return render_template("taskHome.html", taskTypes=taskTypes)
     if request.method == 'POST':
         userID = session.get('id')
         taskName = request.form.get('taskName')

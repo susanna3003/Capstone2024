@@ -18,7 +18,7 @@ connection = sqlite3.connect('taskDatabase.db')
 with open('taskSchema.sql') as f:
         connection.executescript(f.read())
         cur = connection.cursor()
-        cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, location) VALUES ('id', 'taskName', 'taskType', 'creationDate', 'dateDue', 'description', 'recurringTask', 'location')")
+        cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, invitees, location) VALUES ('id', 'taskName', 'taskType', 'creationDate', 'dateDue', 'description', 'recurringTask', 'invitees', 'location')")
         connection.commit()
 connection.close()
 

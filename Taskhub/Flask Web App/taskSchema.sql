@@ -8,7 +8,8 @@ CREATE TABLE tasks (
     creationDate DATE, 
     dateDue DATE, 
     description TEXT, 
-    recurringTask TEXT, 
+    recurringTask TEXT,
+    invitees TEXT, 
     location TEXT, 
     FOREIGN KEY (userId) REFERENCES User(id)
 );

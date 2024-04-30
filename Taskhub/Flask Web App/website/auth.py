@@ -315,7 +315,7 @@ def taskHome():
         cur.execute("SELECT accountType FROM users WHERE id=?", (userID,))
         accountType = cur.fetchone()[0].lower()
         conn.close()
-        print("AccountType: ", accountType)
+        
         # Define task types based on account type
         if accountType == "parent":
             taskTypes = ["Errand", "Extra Curricular", "Financial Management", "Health Care", "House Chores", "Medical Appointment", "School Event", "Shopping", "Special Occasions", "Transportation", "Misc"]
@@ -334,16 +334,16 @@ def taskHome():
         dateCreated = date.today()
         description = request.form.get('taskDescription')
         location = request.form.get('taskLocation')
-        invites = request.form.get('taskInvite')
+        invitees = request.form.get('taskInvite')
         reminder = request.form.get('taskRemind')
         recurringTask = request.form.get('taskRecurr')
-
+        print(invitees)
         # Connect to the database
         conn = sqlite3.connect('taskDatabase.db')
         cur = conn.cursor()
 
         # Insert the user information into the database
-        cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateCreated, dateDue, description, recurringTask, location))
+        cur.execute("INSERT INTO tasks (userId, taskName, taskType, creationDate, dateDue, description, recurringTask, invitees, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (userID, taskName, taskType, dateCreated, dateDue, description, recurringTask, invitees, location))
 
         # Commit the changes and close the connection
         conn.commit()
@@ -352,7 +352,17 @@ def taskHome():
         conn.close()
         return redirect(url_for('auth.calendar'))
     return render_template("taskHome.html")
-    
+
+# Invitee Search
+@auth.route('/searchUsers/<search_query>', methods=['GET'])
+def search_users(search_query):
+    conn = sqlite3.connect('userDatabase.db')
+    cur = conn.cursor()
+    cur.execute("SELECT firstname, lastname, accountType FROM users WHERE LOWER(firstname || ' ' || lastname) LIKE ?", ('%' + search_query + '%',))
+    users = [{'firstname': row[0], 'lastname': row[1], 'accountType': row[2]} for row in cur.fetchall()]
+    conn.close()
+    return jsonify(users)
+
 # Reminder Home
 @auth.route('/reminderHome')
 def reminderHome():

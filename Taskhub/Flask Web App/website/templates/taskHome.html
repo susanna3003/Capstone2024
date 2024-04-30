@@ -159,7 +159,7 @@ input[type=submit]:hover
 
       <!-- task description -->
       <label for="taskDescription">Description: </label>
-      <input type="textarea" id="taskDescription" name="taskDescription"><br>
+      <input type="textarea" id="taskDescription" name="taskDescription" autocomplete="off"><br>
 
       <!--- task location --->
       <label for="taskLocation">Add a location: </label>
@@ -167,7 +167,9 @@ input[type=submit]:hover
 
       <!--- task invites --->
       <label for="taskInvite">Task invites: </label>
-      <input type="text" id="taskInvite" placeholder="Task Invite"><br>
+      <input type="text" id="taskInviteInput" placeholder="Type to search for users"><br>
+      <div id="userSuggestionList" style="display: none;"></div>
+    
 
       <!--- task reminder --->
       <label for="taskRemind">Reminder: </label>
@@ -194,8 +196,9 @@ input[type=submit]:hover
   <br>
   <p id="rcorners1">{{taskName}}</p>
 </div>
-  
-<!--- <script src="script.js"></script> --->
+
+<!--Google API Script-->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoIWC5he72pbqM7s1zHyu3ef2ll6ylpHU&libraries=places"></script>
 
 <script>
   // Get the button element
@@ -219,6 +222,12 @@ input[type=submit]:hover
 </script>
 
 <script>
+   function initializeAutocomplete() {
+        var input = document.getElementById('taskLocation');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+    }
+    google.maps.event.addDomListener(window, 'load', initializeAutocomplete);
+
   function validateForm() {
     // Get the value of the due date input
     var dueDateInput = new Date(document.getElementById('dateDue').value);
@@ -240,5 +249,42 @@ input[type=submit]:hover
 
     return true; // Allow form submission
 }
+</script>
+
+<!--User Invitees search-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const taskInviteInput = document.getElementById('taskInviteInput');
+      const userSuggestionList = document.getElementById('userSuggestionList');
+
+      taskInviteInput.addEventListener('input', function () {
+          const input = this.value.trim().toLowerCase();
+          if (input === '') {
+              userSuggestionList.style.display = 'none';
+              userSuggestionList.innerHTML = '';
+              return;
+          }
+
+          fetch(`/searchUsers/${input}`)
+              .then(response => response.json())
+              .then(users => {
+                  userSuggestionList.innerHTML = '';
+                  users.forEach(user => {
+                      const userEntry = document.createElement('div');
+                      userEntry.textContent = `${user.firstname} ${user.lastname} - ${user.accountType}`;
+                      userEntry.classList.add('user-entry');
+                      userEntry.addEventListener('click', function () {
+                          taskInviteInput.value = `${user.firstname} ${user.lastname} - ${user.accountType}`;
+                          userSuggestionList.style.display = 'none';
+                      });
+                      userSuggestionList.appendChild(userEntry);
+                  });
+                  userSuggestionList.style.display = 'block';
+              })
+              .catch(error => {
+                  console.error('Error fetching user suggestions:', error);
+              });
+      });
+  });
 </script>
 {% endblock %}

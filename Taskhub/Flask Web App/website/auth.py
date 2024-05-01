@@ -310,17 +310,20 @@ def taskHome():
     if request.method == 'GET':
         # Get the user's account type
         userID = session.get('id')
-        conn = sqlite3.connect('userDatabase.db')
-        cur = conn.cursor()
-        cur.execute("SELECT username FROM users WHERE id = ?", (userID,))
-        user_data = cur.fetchone()
+        user_conn = sqlite3.connect('userDatabase.db')
+        user_cur = user_conn.cursor()
+        user_cur.execute("SELECT username FROM users WHERE id = ?", (userID,))
+        user_data = user_cur.fetchone()
         username = user_data[0] if user_data else "User"
-        cur.execute("SELECT accountType FROM users WHERE id=?", (userID,))
-        accountType = cur.fetchone()[0].lower()
-        cur.execute("SELECT * FROM tasks where userId = ?", (userID,))
-        userTasks = cur.fetchall()
+        user_cur.execute("SELECT accountType FROM users WHERE id=?", (userID,))
+        accountType = user_cur.fetchone()[0].lower()
+        task_conn = sqlite3.connect('taskDatabase.db')
+        task_cur = task_conn.cursor()
+        task_cur.execute("SELECT * FROM tasks where userId = ?", (userID,))
+        userTasks = task_cur.fetchall()
         taskCount = 0
-        conn.close()
+        user_conn.close()
+        task_conn.close()
 
         # Get task info and task count
         for task in userTasks:

@@ -10,7 +10,6 @@
 <div class="login-options">
     <button class="login-button" onclick="showLoginForm('calendar')">Calendar</button>
     <button class="login-button" onclick="showLoginForm('reminder')">Reminders</button>
-    <button class="login-button" onclick="showLoginForm('complete')">Completed Tasks</button>
 </div>
 
 <form class="login-form" id="calendarForm" style="display: none;">
@@ -19,10 +18,6 @@
 
 <form class="login-form" id="reminderForm" style="display: none;">
     <p>Reminders</p>
-</form>
-
-<form class="login-form" id="completeForm" style="display: none;">
-    <p>Completed Tasks</p>
 </form>
 
 <!-- Popup Modal -->
@@ -35,7 +30,10 @@
         </div>
         <div class="modal-body">
           <p id="taskName"></p>
+          <p id="taskType"></p>
           <p id="taskDescription"></p>
+          <p id="taskLocation"></p>
+          <p id="taskInvitees"></p>
         </div>
       </div>
     </div>
@@ -74,9 +72,15 @@
             eventClick: function(info) 
             {
                 var taskName = info.event.title;
+                var taskType = info.event.extendedProps.type;
                 var taskDescription = info.event.extendedProps.description;
+                var taskInvite = info.event.extendedProps.invite;
+                var taskLocation = info.event.extendedProps.location;
                 $('#taskName').text('Task Name: ' + taskName);
+                $('#taskType').text('Type: ' + taskType);
                 $('#taskDescription').text('Description: ' + taskDescription);
+                $('#taskInvitees').text('Invitees: ' + taskInvitees);
+                $('#taskLocation').text('Location: ' + taskLocation);
                 $('#taskDetailsModal').modal('show');
             }
     });

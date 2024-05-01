@@ -204,8 +204,11 @@ def get_tasks():
         event = {
             'id': task[0],  # Task ID
             'title': task[2],  # Task name
+            'type': task [3],  # Task type
             'start': task[5],  # Task deadline
             'description': task[6],  # Task description
+            'invite': task[8],  # Task invites
+            'location': task[9] # Task Location
         }
         events.append(event)
     return jsonify(events)
@@ -322,6 +325,7 @@ def taskHome():
         task_cur.execute("SELECT * FROM tasks where userId = ?", (userID,))
         userTasks = task_cur.fetchall()
         taskCount = 0
+        tasksExist = 0
         user_conn.close()
         task_conn.close()
 

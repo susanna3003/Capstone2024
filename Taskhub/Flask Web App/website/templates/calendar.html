@@ -34,6 +34,10 @@
           <p id="taskDescription"></p>
           <p id="taskLocation"></p>
           <p id="taskInvitees"></p>
+          <form action="/taskDeletion" method="post" style="display: inline-block;">
+            <input type="hidden" id="taskId" name="taskId">
+            <button type="submit" class="btn btn-danger">Delete Task</button>
+        </form>
         </div>
       </div>
     </div>
@@ -71,6 +75,7 @@
             },
             eventClick: function(info) 
             {
+                var taskId = info.event.id;
                 var taskName = info.event.title;
                 var taskType = info.event.extendedProps.type;
                 var taskDescription = info.event.extendedProps.description;
@@ -81,6 +86,7 @@
                 $('#taskDescription').text('Description: ' + taskDescription);
                 $('#taskInvitees').text('Invitees: ' + taskInvitees);
                 $('#taskLocation').text('Location: ' + taskLocation);
+                $('#taskId').val(taskId);
                 $('#taskDetailsModal').modal('show');
             }
     });

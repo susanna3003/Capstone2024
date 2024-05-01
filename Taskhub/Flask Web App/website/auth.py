@@ -31,6 +31,45 @@ def login():
                 return redirect(url_for("auth.userPage"))
     return render_template("login.html")
 
+# Forgot Password Route
+@auth.route('/forgotPassword', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        user_email = request.form.get('userEmail')
+        if emailDatabaseCheck(user_email):
+            passwordResetEmail(user_email)
+            flash('An email with instructions to reset your password has been sent.', 'info')
+            return redirect(url_for('auth.login'))
+        else:
+            # If the email doesn't exist in the database, show an error message
+            flash('Email not found. Please enter a valid email address.', 'error')
+            return render_template("forgotPassword.html")
+    else:
+        # Render the forgot password form
+        return render_template("forgotPassword.html")
+    
+# Function to check if email exists in the database
+def emailDatabaseCheck(email):
+    conn = sqlite3.connect('userDatabase.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE email = ?", (email,))
+    user = cur.fetchone()
+    conn.close()
+    return user is not None
+
+# Send password reset email
+def passwordResetEmail(email):
+    msg = Message('Password Reset', sender='luckyfoot028@gmail.com"', recipients=[email])
+    msg.subject = "Taskhub Password Reset"
+    msg.body = 'Click the following link to reset your password: http://127.0.0.1:5000/passwordReset'
+    mail.send(msg)
+
+#   Logout route
+@auth.route('/logout')
+def logout():
+    session.pop('logged_in', None)  # Clear the session variable
+    return redirect(url_for('auth.login'))
+
 #   SignUp page
 @auth.route('/signUp', methods=['GET', 'POST'])
 def sign_up():
@@ -111,33 +150,6 @@ def userPage():
                 disableBtn = True
     return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username = username, disableBtn=disableBtn)
 
-# Week Review viewer
-@auth.route('/viewWeekReview')
-def viewWeekReview():
-    return render_template("viewWeekReview.html")
-
-# retireving week Reviews
-@auth.route('/getReviews')
-def getReviews():
-    user_id = session.get('id')
-    conn = sqlite3.connect('weekReview.db')
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM weekReview WHERE userId = ?", (user_id,))
-    reviewsData = cur.fetchall()
-    conn.close()
-    reviews = []
-    for review in reviewsData:
-        reviewDictionary = {
-            'date': review[2],  # date
-            'rating': review[3],  # review rating
-            'description': review[4],  # review description
-            'weekHigh': review[5],  # review high
-            'weekLow': review[6],  # review low
-            'comment': review[7],  # review comment
-        }
-        reviews.append(reviewDictionary)
-    return jsonify(reviews)
-
 #   account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])
 def save_account_type():
@@ -178,40 +190,6 @@ def generate_unique_student_id():
     # Generate a unique ID for the teacher
     studentId = str(uuid.uuid4())
     return studentId
-
-#   Logout route
-@auth.route('/logout')
-def logout():
-    session.pop('logged_in', None)  # Clear the session variable
-    return redirect(url_for('auth.login'))
-
-#   Calendar Route
-@auth.route('/calendar')
-def calendar():
-    return render_template("calendar.html")
-
-#   Retrieving tasks
-@auth.route('/getTasks')
-def get_tasks():
-    user_id = session.get('id')
-    conn = sqlite3.connect('taskDatabase.db')
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM tasks WHERE userId = ?", (user_id,))
-    tasks = cur.fetchall()
-    conn.close()
-    events = []
-    for task in tasks:
-        event = {
-            'id': task[0],  # Task ID
-            'title': task[2],  # Task name
-            'type': task [3],  # Task type
-            'start': task[5],  # Task deadline
-            'description': task[6],  # Task description
-            'invite': task[8],  # Task invites
-            'location': task[9] # Task Location
-        }
-        events.append(event)
-    return jsonify(events)
 
 #   Preferences Route
 @auth.route('/preferences')
@@ -307,6 +285,59 @@ def updateEmail():
     # Redirect the user back to the user page
     return redirect(url_for('auth.userPage'))
 
+# Week Review
+@auth.route('/weekReview', methods=['GET', 'POST'])
+def weekReview():
+    if request.method == 'POST':
+        userID = session.get('id')
+        submissionDate = date.today()
+        weekRating = request.form.get('weekRating')
+        weekDesc = request.form.get('weekDesc')
+        weekHigh = request.form.get('weekHigh')
+        weekLow = request.form.get('weekLow')
+        weekComment = request.form.get('weekComment')
+
+        # Connect to weekReview database
+        conn = sqlite3.connect('weekReview.db')
+        cur = conn.cursor()
+
+        # Insert the user information into the database
+        cur.execute("INSERT INTO weekReview (userID, submissionDate, weekRating, weekDesc, weekHigh, weekLow, weekComment) VALUES (?, ?, ?, ?, ?, ?, ?)", (userID, submissionDate, weekRating, weekDesc, weekHigh, weekLow, weekComment))
+
+        # Commit the changes and close the connection
+        conn.commit()
+        flash('Review Complete!', category='success')
+        conn.close()
+        return redirect(url_for('auth.userPage'))
+    return render_template("weekReview.html")
+
+# Week Review viewer
+@auth.route('/viewWeekReview')
+def viewWeekReview():
+    return render_template("viewWeekReview.html")
+
+# retireving week Reviews
+@auth.route('/getReviews')
+def getReviews():
+    user_id = session.get('id')
+    conn = sqlite3.connect('weekReview.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM weekReview WHERE userId = ?", (user_id,))
+    reviewsData = cur.fetchall()
+    conn.close()
+    reviews = []
+    for review in reviewsData:
+        reviewDictionary = {
+            'date': review[2],  # date
+            'rating': review[3],  # review rating
+            'description': review[4],  # review description
+            'weekHigh': review[5],  # review high
+            'weekLow': review[6],  # review low
+            'comment': review[7],  # review comment
+        }
+        reviews.append(reviewDictionary)
+    return jsonify(reviews)
+
 # Task Home
 @auth.route('/taskHome', methods=['GET', 'POST'])
 def taskHome():
@@ -373,6 +404,34 @@ def taskHome():
         return redirect(url_for('auth.calendar'))
     return render_template("taskHome.html")
 
+#   Calendar Route
+@auth.route('/calendar')
+def calendar():
+    return render_template("calendar.html")
+
+#   Retrieving tasks
+@auth.route('/getTasks')
+def get_tasks():
+    user_id = session.get('id')
+    conn = sqlite3.connect('taskDatabase.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM tasks WHERE userId = ?", (user_id,))
+    tasks = cur.fetchall()
+    conn.close()
+    events = []
+    for task in tasks:
+        event = {
+            'id': task[0],  # Task ID
+            'title': task[2],  # Task name
+            'type': task [3],  # Task type
+            'start': task[5],  # Task deadline
+            'description': task[6],  # Task description
+            'invite': task[8],  # Task invites
+            'location': task[9] # Task Location
+        }
+        events.append(event)
+    return jsonify(events)
+
 # Invitee Search
 @auth.route('/searchUsers/<search_query>', methods=['GET'])
 def search_users(search_query):
@@ -382,6 +441,23 @@ def search_users(search_query):
     users = [{'firstname': row[0], 'lastname': row[1], 'accountType': row[2]} for row in cur.fetchall()]
     conn.close()
     return jsonify(users)
+
+# Task Deletion
+@auth.route('/taskDeletion', methods=['GET', 'POST'])
+def taskDeletion():
+    if request.method == 'POST':
+        task_id = request.form.get('taskId')
+
+        # Delete the user's task from the database
+        conn = sqlite3.connect('taskDatabase.db')
+        cur = conn.cursor()
+        cur.execute("DELETE FROM tasks WHERE taskID = ?", (task_id,))
+        conn.commit()
+        conn.close()
+
+        # Flash a message to indicate that the task has been deleted
+        flash('The task has been successfully deleted!', 'success')
+        return redirect(url_for('auth.calendar'))
 
 # Reminder Home
 @auth.route('/reminderHome')
@@ -411,63 +487,3 @@ def reminderHome():
         conn.close()
         return redirect(url_for('auth.calendar'))
     return render_template("reminderHome.html")
-
-# Week Review
-@auth.route('/weekReview', methods=['GET', 'POST'])
-def weekReview():
-    if request.method == 'POST':
-        userID = session.get('id')
-        submissionDate = date.today()
-        weekRating = request.form.get('weekRating')
-        weekDesc = request.form.get('weekDesc')
-        weekHigh = request.form.get('weekHigh')
-        weekLow = request.form.get('weekLow')
-        weekComment = request.form.get('weekComment')
-
-        # Connect to weekReview database
-        conn = sqlite3.connect('weekReview.db')
-        cur = conn.cursor()
-
-        # Insert the user information into the database
-        cur.execute("INSERT INTO weekReview (userID, submissionDate, weekRating, weekDesc, weekHigh, weekLow, weekComment) VALUES (?, ?, ?, ?, ?, ?, ?)", (userID, submissionDate, weekRating, weekDesc, weekHigh, weekLow, weekComment))
-
-        # Commit the changes and close the connection
-        conn.commit()
-        flash('Review Complete!', category='success')
-        conn.close()
-        return redirect(url_for('auth.userPage'))
-    return render_template("weekReview.html")
-
-   #!!!!! Forgot Password Group !!!!!!#
-# Forgot Password Route
-@auth.route('/forgotPassword', methods=['GET', 'POST'])
-def forgot_password():
-    if request.method == 'POST':
-        user_email = request.form.get('userEmail')
-        if emailDatabaseCheck(user_email):
-            passwordResetEmail(user_email)
-            flash('An email with instructions to reset your password has been sent.', 'info')
-            return redirect(url_for('auth.login'))
-        else:
-            # If the email doesn't exist in the database, show an error message
-            flash('Email not found. Please enter a valid email address.', 'error')
-            return render_template("forgotPassword.html")
-    else:
-        # Render the forgot password form
-        return render_template("forgotPassword.html")
-    
-# Function to check if email exists in the database
-def emailDatabaseCheck(email):
-    conn = sqlite3.connect('userDatabase.db')
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE email = ?", (email,))
-    user = cur.fetchone()
-    conn.close()
-    return user is not None
-
-# Send password reset email
-def passwordResetEmail(email):
-    msg = Message('Password Reset', sender='luckyfoot028@gmail.com"', recipients=[email])
-    msg.subject = "Taskhub Password Reset"
-    msg.body = 'Click the following link to reset your password: http://127.0.0.1:5000/passwordReset'
-    mail.send(msg)

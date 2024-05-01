@@ -310,11 +310,26 @@ def taskHome():
     if request.method == 'GET':
         # Get the user's account type
         userID = session.get('id')
-        conn = sqlite3.connect('userDatabase.db')
-        cur = conn.cursor()
-        cur.execute("SELECT accountType FROM users WHERE id=?", (userID,))
-        accountType = cur.fetchone()[0].lower()
-        conn.close()
+        user_conn = sqlite3.connect('userDatabase.db')
+        user_cur = user_conn.cursor()
+        user_cur.execute("SELECT username FROM users WHERE id = ?", (userID,))
+        user_data = user_cur.fetchone()
+        username = user_data[0] if user_data else "User"
+        user_cur.execute("SELECT accountType FROM users WHERE id=?", (userID,))
+        accountType = user_cur.fetchone()[0].lower()
+        task_conn = sqlite3.connect('taskDatabase.db')
+        task_cur = task_conn.cursor()
+        task_cur.execute("SELECT * FROM tasks where userId = ?", (userID,))
+        userTasks = task_cur.fetchall()
+        taskCount = 0
+        user_conn.close()
+        task_conn.close()
+
+        # Get task info and task count
+        for task in userTasks:
+            taskID, userId, taskName, taskType, creationDate, dateDue, description, recurringTask, invitees, location = task
+            taskCount += 1
+            tasksExist = 1
         
         # Define task types based on account type
         if accountType == "parent":
@@ -325,7 +340,8 @@ def taskHome():
             taskTypes = ["Extra Curricular", "Homework Assignment", "Meeting", "Personal", "Project", "Studying Time", "Testing", "Misc"]
         else:
             taskTypes = ["Errands", "Extra Curricular", "Financial", "Health and Wellness", "Medical", "Personal", "Transportation", "Work-Related", "Misc"]
-        return render_template("taskHome.html", taskTypes=taskTypes)
+        return render_template("taskHome.html", taskTypes=taskTypes, username=username, taskCount=taskCount, tasksExist=tasksExist)
+
     if request.method == 'POST':
         userID = session.get('id')
         taskName = request.form.get('taskName')
@@ -366,6 +382,30 @@ def search_users(search_query):
 # Reminder Home
 @auth.route('/reminderHome')
 def reminderHome():
+    if request.method == 'POST':
+        userID = session.get('id')
+        reminderName = request.form.get('reminderName')
+        reminderDate = request.form.get('dateDue')
+        dateCreated = date.today()
+        reminderDesc = request.form.get('reminderDescription')
+        location = request.form.get('reminderLocation')
+        recurringReminder = request.form.get('reminderRecurr')
+
+        # Connect to the database
+        conn = sqlite3.connect('taskDatabase.db')
+        cur = conn.cursor()
+
+        # Insert the user information into the database
+        cur.execute("INSERT INTO reminders (userId, reminderName, creationDate, reminderDate, reminderDesc, recurringReminder, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, reminderName, dateCreated, reminderDate, reminderDesc, recurringReminder, location))
+        user_id = cur.lastrowid  # Get the ID of the inserted user
+        session['id'] = user_id
+
+        # Commit the changes and close the connection
+        conn.commit()
+        flash('Reminder created!', category='success')
+        session['logged_in'] = True
+        conn.close()
+        return redirect(url_for('auth.calendar'))
     return render_template("reminderHome.html")
 
 # Week Review

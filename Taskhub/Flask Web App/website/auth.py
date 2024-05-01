@@ -340,7 +340,7 @@ def taskHome():
             taskTypes = ["Extra Curricular", "Homework Assignment", "Meeting", "Personal", "Project", "Studying Time", "Testing", "Misc"]
         else:
             taskTypes = ["Errands", "Extra Curricular", "Financial", "Health and Wellness", "Medical", "Personal", "Transportation", "Work-Related", "Misc"]
-        return render_template("taskHome.html", taskTypes=taskTypes)
+        return render_template("taskHome.html", taskTypes=taskTypes, username=username, taskCount=taskCount, tasksExist=tasksExist)
 
     if request.method == 'POST':
         userID = session.get('id')
@@ -367,7 +367,7 @@ def taskHome():
         session['logged_in'] = True
         conn.close()
         return redirect(url_for('auth.calendar'))
-    return render_template("taskHome.html", username=username, tasksExist=tasksExist)
+    return render_template("taskHome.html")
 
 # Invitee Search
 @auth.route('/searchUsers/<search_query>', methods=['GET'])

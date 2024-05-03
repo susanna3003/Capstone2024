@@ -191,11 +191,6 @@ def generate_unique_student_id():
     studentId = str(uuid.uuid4())
     return studentId
 
-#   Preferences Route
-@auth.route('/preferences')
-def preferences():
-    return render_template("preferences.html")
-
 #   Privacy Route
 @auth.route('/privacy')
 def privacy():
@@ -385,10 +380,9 @@ def taskHome():
         dateCreated = date.today()
         description = request.form.get('taskDescription')
         location = request.form.get('taskLocation')
-        invitees = request.form.get('taskInvite')
+        invitees = request.form.get('taskInviteInput')
         reminder = request.form.get('taskRemind')
         recurringTask = request.form.get('taskRecurr')
-        print(invitees)
         # Connect to the database
         conn = sqlite3.connect('taskDatabase.db')
         cur = conn.cursor()

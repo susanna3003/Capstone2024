@@ -244,11 +244,11 @@ input[type=submit]:hover
     if (dueDateInput <= currentDate) {
         // Display error message
         document.getElementById('alertMessage').innerHTML = 
-        `<div class="alert alert-dismissible alert-warning">
+        <div class="alert alert-dismissible alert-warning">
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             <h4 class="alert-heading">Warning!</h4>
             <p class="mb-0">You can't create a task in the past! Try entering a current Date!</p>
-        </div>`;
+        </div>;
         return false; // Prevent form submission
     }
 

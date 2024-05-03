@@ -191,11 +191,6 @@ def generate_unique_student_id():
     studentId = str(uuid.uuid4())
     return studentId
 
-#   Preferences Route
-@auth.route('/preferences')
-def preferences():
-    return render_template("preferences.html")
-
 #   Privacy Route
 @auth.route('/privacy')
 def privacy():
@@ -359,6 +354,7 @@ def taskHome():
         task_cur.execute("SELECT * FROM tasks where userId = ?", (userID,))
         userTasks = task_cur.fetchall()
         taskCount = 0
+        tasksExist = 0
         user_conn.close()
         task_conn.close()
 
@@ -387,7 +383,7 @@ def taskHome():
         dateCreated = date.today()
         description = request.form.get('taskDescription')
         location = request.form.get('taskLocation')
-        invitees = request.form.get('taskInvite')
+        invitees = request.form.get('taskInviteInput')
         reminder = request.form.get('taskRemind')
         recurringTask = request.form.get('taskRecurr')
         print(invitees)
@@ -425,6 +421,7 @@ def reminderHome():
         rem_cur.execute("SELECT * FROM tasks where userId = ?", (userID,))
         userRems = rem_cur.fetchall()
         remCount = 0
+        remsExist = 0
         user_conn.close()
         rem_conn.close()
 

@@ -337,15 +337,18 @@ def getReviews():
 @auth.route('/taskHome', methods=['GET', 'POST'])
 def taskHome():
     if request.method == 'GET':
-        # Get the user's account type
+        # Create user connection
         userID = session.get('id')
         user_conn = sqlite3.connect('userDatabase.db')
         user_cur = user_conn.cursor()
+        # Get username
         user_cur.execute("SELECT username FROM users WHERE id = ?", (userID,))
         user_data = user_cur.fetchone()
         username = user_data[0] if user_data else "User"
+        # Get account type
         user_cur.execute("SELECT accountType FROM users WHERE id=?", (userID,))
         accountType = user_cur.fetchone()[0].lower()
+        # Create task connection
         task_conn = sqlite3.connect('taskDatabase.db')
         task_cur = task_conn.cursor()
         task_cur.execute("SELECT * FROM tasks where userId = ?", (userID,))
@@ -370,7 +373,7 @@ def taskHome():
             taskTypes = ["Extra Curricular", "Homework Assignment", "Meeting", "Personal", "Project", "Studying Time", "Testing", "Misc"]
         else:
             taskTypes = ["Errands", "Extra Curricular", "Financial", "Health and Wellness", "Medical", "Personal", "Transportation", "Work-Related", "Misc"]
-        return render_template("taskHome.html", taskTypes=taskTypes, username=username, taskCount=taskCount, tasksExist=tasksExist)
+        return render_template("taskHome.html", taskTypes=taskTypes, username=username, tasksExist=tasksExist, taskCount=taskCount)
 
     if request.method == 'POST':
         userID = session.get('id')
@@ -383,6 +386,8 @@ def taskHome():
         invitees = request.form.get('taskInviteInput')
         reminder = request.form.get('taskRemind')
         recurringTask = request.form.get('taskRecurr')
+        print(invitees)
+
         # Connect to the database
         conn = sqlite3.connect('taskDatabase.db')
         cur = conn.cursor()
@@ -397,6 +402,61 @@ def taskHome():
         conn.close()
         return redirect(url_for('auth.calendar'))
     return render_template("taskHome.html")
+
+# Reminder Home
+@auth.route('/reminderHome')
+def reminderHome():
+    if request.method == 'GET':
+        # Create user connection
+        userID = session.get('id')
+        user_conn = sqlite3.connect('userDatabase.db')
+        user_cur = user_conn.cursor()
+        # Get username
+        user_cur.execute("SELECT username FROM users WHERE id = ?", (userID,))
+        user_data = user_cur.fetchone()
+        username = user_data[0] if user_data else "User"
+        # Create reminder connection
+        rem_conn = sqlite3.connect('taskDatabase.db')
+        rem_cur = rem_conn.cursor()
+        rem_cur.execute("SELECT * FROM tasks where userId = ?", (userID,))
+        userRems = rem_cur.fetchall()
+        remCount = 0
+        remsExist = 0
+        user_conn.close()
+        rem_conn.close()
+
+        # Get reminder info and reminder count
+        for rem in userRems:
+            #userId, reminderName, creationDate, reminderDate, reminderDesc, recurringReminder, location = rem
+            remCount += 1
+            remsExist = 1
+        return render_template("reminderHome.html", username=username, remCount=remCount, remsExist=remsExist)
+
+    if request.method == 'POST':
+        userID = session.get('id')
+        reminderName = request.form.get('reminderName')
+        reminderDate = request.form.get('dateDue')
+        dateCreated = date.today()
+        reminderDesc = request.form.get('reminderDescription')
+        location = request.form.get('reminderLocation')
+        recurringReminder = request.form.get('reminderRecurr')
+
+        # Connect to the database
+        conn = sqlite3.connect('taskDatabase.db')
+        cur = conn.cursor()
+
+        # Insert the user information into the database
+        cur.execute("INSERT INTO reminders (userId, reminderName, creationDate, reminderDate, reminderDesc, recurringReminder, location) VALUES (?, ?, ?, ?, ?, ?, ?)", (userID, reminderName, dateCreated, reminderDate, reminderDesc, recurringReminder, location))
+        user_id = cur.lastrowid  # Get the ID of the inserted user
+        session['id'] = user_id
+
+        # Commit the changes and close the connection
+        conn.commit()
+        flash('Reminder created!', category='success')
+        session['logged_in'] = True
+        conn.close()
+        return redirect(url_for('auth.calendar'))
+    return render_template("reminderHome.html")
 
 #   Calendar Route
 @auth.route('/calendar')
@@ -452,32 +512,3 @@ def taskDeletion():
         # Flash a message to indicate that the task has been deleted
         flash('The task has been successfully deleted!', 'success')
         return redirect(url_for('auth.calendar'))
-
-# Reminder Home
-@auth.route('/reminderHome')
-def reminderHome():
-    if request.method == 'POST':
-        userID = session.get('id')
-        reminderName = request.form.get('reminderName')
-        reminderDate = request.form.get('dateDue')
-        dateCreated = date.today()
-        reminderDesc = request.form.get('reminderDescription')
-        location = request.form.get('reminderLocation')
-        recurringReminder = request.form.get('reminderRecurr')
-
-        # Connect to the database
-        conn = sqlite3.connect('taskDatabase.db')
-        cur = conn.cursor()
-
-        # Insert the user information into the database
-        cur.execute("INSERT INTO reminders (userId, reminderName, creationDate, reminderDate, reminderDesc, recurringReminder, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, reminderName, dateCreated, reminderDate, reminderDesc, recurringReminder, location))
-        user_id = cur.lastrowid  # Get the ID of the inserted user
-        session['id'] = user_id
-
-        # Commit the changes and close the connection
-        conn.commit()
-        flash('Reminder created!', category='success')
-        session['logged_in'] = True
-        conn.close()
-        return redirect(url_for('auth.calendar'))
-    return render_template("reminderHome.html")

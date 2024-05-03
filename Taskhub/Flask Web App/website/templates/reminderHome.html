@@ -123,8 +123,16 @@ input[type=submit]:hover
 }
 </style>
 
-<h1>My Reminders</h1>
-<p>This is where user reminders will be listed. It looks like your reminders are empty right now!</p>
+<h1>{{ username }}'s Tasks</h1>
+{% if tasksExist == 1 %}
+  {% if taskCount == 1 %}
+    <h3>{{ taskCount }} current task.</h3>
+  {% elif taskCount > 1 %}
+    <h3>{{ taskCount }} current tasks.</h3>
+  {% elif taskCount == 0 %}
+    <h3>You do not have any current tasks.</h3>
+  {% endif %}
+{% endif %}
 
 <p align="right"><button id="createReminderButton" onclick="openModal()">Create Reminder</button></p>
 
@@ -165,11 +173,6 @@ input[type=submit]:hover
         <br>
         <button type="submit">Submit</button>
       </form>
-</div>
-
-<div>
-  <br>
-  <p id="rcorners1">{{reminderName}}</p>
 </div>
   
 <script src="script.js"></script>

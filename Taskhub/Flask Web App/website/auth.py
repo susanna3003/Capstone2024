@@ -428,9 +428,9 @@ def reminderHome():
         user_conn.close()
         rem_conn.close()
 
-        # Get task info and task count
-        for reminder in userRems:
-            reminerID, userId, reminderName, creationDate, reminderDate, reminderDesc, recurringReminder, location = reminder
+        # Get reminder info and reminder count
+        for rem in userRems:
+            #userId, reminderName, creationDate, reminderDate, reminderDesc, recurringReminder, location = rem
             remCount += 1
             remsExist = 1
         return render_template("reminderHome.html", username=username, remCount=remCount, remsExist=remsExist)
@@ -449,7 +449,7 @@ def reminderHome():
         cur = conn.cursor()
 
         # Insert the user information into the database
-        cur.execute("INSERT INTO reminders (userId, reminderName, creationDate, reminderDate, reminderDesc, recurringReminder, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (userID, reminderName, dateCreated, reminderDate, reminderDesc, recurringReminder, location))
+        cur.execute("INSERT INTO reminders (userId, reminderName, creationDate, reminderDate, reminderDesc, recurringReminder, location) VALUES (?, ?, ?, ?, ?, ?, ?)", (userID, reminderName, dateCreated, reminderDate, reminderDesc, recurringReminder, location))
         user_id = cur.lastrowid  # Get the ID of the inserted user
         session['id'] = user_id
 

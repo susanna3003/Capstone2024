@@ -1,4 +1,5 @@
-{% extends "theme.html" %} {% block title %} User Page: Taskhub {% endblock %}
+{% extends "theme.html" %} 
+{% block title %} User Page: Taskhub {% endblock %}
 
 {% block content %} 
 <!--CSS-->
@@ -68,17 +69,9 @@
         </div>
         <div class="col-md-9">
             <header>
-                <div class="avatar-container">
+                <div class="avatar-container" data-toggle="modal" data-target="#avatarSelectModal">
                     <label for="avatar-input">
-                        {% if accountType == 'teacher' %}
-                            <img src="../static/teacherstar.png" alt="user" class="avatar" id="avatar-image">
-                        {% elif accountType == 'student' %}
-                            <img src="../static/studentstar.png" alt="user" class="avatar" id="avatar-image">
-                        {% elif accountType == 'parent' %}
-                            <img src="../static/parentIcon.png" alt="user" class="avatar" id="avatar-image">
-                        {% else %}
-                            <img src="../static/userstar.png" alt="user" class="avatar" id="avatar-image">
-                        {% endif %}
+                        <img src="{{ profilePicturePath }}" alt="user" class="avatar" id="avatar-image">
                     </label>
                 </div>
                 <h1>Hello, {{ username }}</h1>
@@ -163,8 +156,40 @@
     </div>
 </div>
 
+<!-- Avatar selection modal -->
+<div class="modal fade" id="avatarSelectModal" tabindex="-1" role="dialog" aria-labelledby="avatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarModalLabel">Select Your Avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Avatar options -->
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <img src="../static/teacherstar.png" alt="teacher" class="avatar-select" data-avatar="../static/teacherstar.png" style="max-width: 100px;">
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <img src="../static/studentstar.png" alt="student" class="avatar-select" data-avatar="../static/studentstar.png" style="max-width: 100px;">
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <img src="../static/userstar.png" alt="default" class="avatar-select" data-avatar="../static/userstar.png" style="max-width: 100px;">
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <img src="../static/defaultProfilePicture.png" alt="default" class="avatar-select" data-avatar="../static/defaultProfilePicture.png" style="max-width: 100px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--- Account type popup script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
    $(document).ready(function() {
     $('#accountTypeModal').modal('show');
@@ -185,6 +210,28 @@
                 console.error(error);
             }
         });
+    });
+
+    // When an avatar is selected
+    $('.avatar-select').click(function () {
+        var selectedAvatar = $(this).data('avatar');
+        // Update the avatar image
+        $('#avatar-image').attr('src', selectedAvatar);
+        // Update the profilePicturePath in the database
+        $.ajax({
+            url: '/update_avatar',
+            type: 'POST',
+            data: { profilePicturePath: selectedAvatar },
+            success: function (response) {
+                // Handle success
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+                console.error(error);
+            }
+        });
+        // Close the modal
+        $('#avatarSelectModal').modal('hide');
     });
 });
 </script>

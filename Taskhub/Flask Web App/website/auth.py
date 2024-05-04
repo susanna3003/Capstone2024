@@ -155,7 +155,12 @@ def userPage():
 def save_account_type():
     # Retrieve the selected account type from the form
     accountType = request.form.get('accountType')
-
+    subjectTaught = request.form.get('subjectTaught')
+    gradeLevel = request.form.get('gradeLevel')
+    courseEnrolled = request.form.get('courseEnrolled')
+    childCount = request.form.get('childCount')
+    teacherID = request.form.get('teacherId')
+    studentID = request.form.get('studentId')
     # Get the user's ID
     user_id = session.get('id')
 
@@ -167,29 +172,21 @@ def save_account_type():
 
     # Linking user account type to specific database
     if accountType == 'teacher':
-        cur.execute("INSERT INTO Teacher (userId, teacherId) VALUES (?, ?)", (user_id, generate_unique_teacher_id()))
+        cur.execute("INSERT INTO Teacher (userId, teacherId, subjectTaught) VALUES (?, ?, ?)", (user_id, teacherID, subjectTaught))
     elif accountType == 'parent':
-        cur.execute("INSERT INTO Parent (userId, parentId) VALUES (?, ?)", (user_id, generate_unique_parent_id()))
+        cur.execute("INSERT INTO Parent (userId, parentId, childrenInfo) VALUES (?, ?, ?)", (user_id, generate_unique_parent_id(), childCount))
     elif accountType == 'student':
-        cur.execute("INSERT INTO Student (userId, studentId) VALUES (?, ?)", (user_id, generate_unique_student_id()))
+        cur.execute("INSERT INTO Student (userId, studentId, gradeLevel, coursesEnrolled) VALUES (?, ?, ?, ?)", (user_id, studentID, gradeLevel, courseEnrolled))
     conn.commit()
     conn.close()
     session['show_account_type_popup'] = False # Prevents pop up loop
     return redirect(url_for('auth.userPage'))
 
 #   Generating unique ID for account type
-def generate_unique_teacher_id():
-    # Generate a unique ID for the teacher
-    teacherId = str(uuid.uuid4())
-    return teacherId
 def generate_unique_parent_id():
     # Generate a unique ID for the teacher
     parentId = str(uuid.uuid4())
     return parentId
-def generate_unique_student_id():
-    # Generate a unique ID for the teacher
-    studentId = str(uuid.uuid4())
-    return studentId
 
 #   Privacy Route
 @auth.route('/privacy')

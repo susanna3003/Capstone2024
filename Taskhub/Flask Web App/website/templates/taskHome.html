@@ -175,7 +175,7 @@ input[type=submit]:hover
 
       <!--- task invites --->
       <label for="taskInvite">Task invites: </label>
-      <input type="text" id="taskInviteInput" placeholder="Type to search for users"><br>
+      <input type="text" id="taskInviteInput" name="taskInviteInput" placeholder="Type to search for users"><br>
       <div id="userSuggestionList" style="display: none;"></div>
     
 
@@ -187,14 +187,15 @@ input[type=submit]:hover
         <option value="no">NO</option>
       </select><br>
 
-      <!--- task reminder --->
-      <label for="taskRecurr">Recurring: </label>
+      <!--- Recurring Task --->
+      <label for="taskRecurr">Recurring Task: </label>
       <select id="taskRecurr" name="taskRecurr">
-        <option value="choose">Recurring? Y/N</option>
-        <option value="yes">YES</option>
-        <option value="no">NO</option>
+        <option value="None">None</option>
+        <option value="Yearly">Yearly</option>
+        <option value="Monthly">Monthly</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Daily">Daily</option>
       </select><br>
-
       <br>
       <button type="submit">Submit</button>
     </form>
@@ -202,7 +203,7 @@ input[type=submit]:hover
 <div id="alertMessage"></div>
 
 <!--Google API Script-->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoIWC5he72pbqM7s1zHyu3ef2ll6ylpHU&libraries=places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoIWC5he72pbqM7s1zHyu3ef2ll6ylpHU&libraries=places&callback=initializeAutocomplete" async defer></script>
 
 <!-- pop-up form script -->
 <script>
@@ -224,14 +225,11 @@ input[type=submit]:hover
   closeButton.addEventListener("click", function() {
     modal.style.display = "none";
   });
-</script>
 
-<script>
-   function initializeAutocomplete() {
-        var input = document.getElementById('taskLocation');
-        var autocomplete = new google.maps.places.Autocomplete(input);
-    }
-    google.maps.event.addDomListener(window, 'load', initializeAutocomplete);
+  function initializeAutocomplete() {
+    var input = document.getElementById('taskLocation');
+    var autocomplete = new google.maps.places.Autocomplete(input);
+  }
 
   function validateForm() {
     // Get the value of the due date input
@@ -242,54 +240,73 @@ input[type=submit]:hover
 
     // Compare due date with current date
     if (dueDateInput <= currentDate) {
-        // Display error message
-        document.getElementById('alertMessage').innerHTML = 
-        <div class="alert alert-dismissible alert-warning">
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            <h4 class="alert-heading">Warning!</h4>
-            <p class="mb-0">You can't create a task in the past! Try entering a current Date!</p>
-        </div>;
-        return false; // Prevent form submission
+      // Display error message
+      document.getElementById('alertMessage').innerHTML = 
+      `<div class="alert alert-dismissible alert-warning">
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <h4 class="alert-heading">Warning!</h4>
+          <p class="mb-0">You can't create a task in the past! Try entering a current Date!</p>
+      </div>`;
+      return false; // Prevent form submission
     }
 
+    // Get the selected recurring option
+    var recurringOption = document.getElementById('taskRecurr').value;
+    switch (recurringOption) {
+      case 'yearly':
+        dueDateInput.setFullYear(dueDateInput.getFullYear() + 1);
+        break;
+      case 'monthly':
+        dueDateInput.setMonth(dueDateInput.getMonth() + 1);
+        break;
+      case 'weekly':
+        dueDateInput.setDate(dueDateInput.getDate() + 7);
+        break;
+      case 'daily':
+        dueDateInput.setDate(dueDateInput.getDate() + 1);
+        break;
+      default:
+        break;
+    }
+
+    // Update the value of the date due input
+    document.getElementById('dateDue').valueAsDate = dueDateInput;
+
     return true; // Allow form submission
-}
-</script>
+  }
 
-<!--User Invitees search-->
-<script>
   document.addEventListener("DOMContentLoaded", function () {
-      const taskInviteInput = document.getElementById('taskInviteInput');
-      const userSuggestionList = document.getElementById('userSuggestionList');
+    const taskInviteInput = document.getElementById('taskInviteInput');
+    const userSuggestionList = document.getElementById('userSuggestionList');
 
-      taskInviteInput.addEventListener('input', function () {
-          const input = this.value.trim().toLowerCase();
-          if (input === '') {
+    taskInviteInput.addEventListener('input', function () {
+      const input = this.value.trim().toLowerCase();
+      if (input === '') {
+        userSuggestionList.style.display = 'none';
+        userSuggestionList.innerHTML = '';
+        return;
+      }
+
+      fetch(`/searchUsers/${input}`)
+        .then(response => response.json())
+        .then(users => {
+          userSuggestionList.innerHTML = '';
+          users.forEach(user => {
+            const userEntry = document.createElement('div');
+            userEntry.textContent = `${user.firstname} ${user.lastname} - ${user.accountType}`;
+            userEntry.classList.add('user-entry');
+            userEntry.addEventListener('click', function () {
+              taskInviteInput.value = `${user.firstname} ${user.lastname} - ${user.accountType}`;
               userSuggestionList.style.display = 'none';
-              userSuggestionList.innerHTML = '';
-              return;
-          }
-
-          fetch(`/searchUsers/${input}`)
-              .then(response => response.json())
-              .then(users => {
-                  userSuggestionList.innerHTML = '';
-                  users.forEach(user => {
-                      const userEntry = document.createElement('div');
-                      userEntry.textContent = `${user.firstname} ${user.lastname} - ${user.accountType}`;
-                      userEntry.classList.add('user-entry');
-                      userEntry.addEventListener('click', function () {
-                          taskInviteInput.value = `${user.firstname} ${user.lastname} - ${user.accountType}`;
-                          userSuggestionList.style.display = 'none';
-                      });
-                      userSuggestionList.appendChild(userEntry);
-                  });
-                  userSuggestionList.style.display = 'block';
-              })
-              .catch(error => {
-                  console.error('Error fetching user suggestions:', error);
-              });
-      });
+            });
+            userSuggestionList.appendChild(userEntry);
+          });
+          userSuggestionList.style.display = 'block';
+        })
+        .catch(error => {
+          console.error('Error fetching user suggestions:', error);
+        });
+    });
   });
 </script>
 {% endblock %}

@@ -386,7 +386,6 @@ def taskHome():
         invitees = request.form.get('taskInviteInput')
         reminder = request.form.get('taskRemind')
         recurringTask = request.form.get('taskRecurr')
-        print(invitees)
 
         # Connect to the database
         conn = sqlite3.connect('taskDatabase.db')

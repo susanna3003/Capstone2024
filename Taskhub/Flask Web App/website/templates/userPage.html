@@ -1,4 +1,5 @@
-{% extends "theme.html" %} {% block title %} User Page: Taskhub {% endblock %}
+{% extends "theme.html" %} 
+{% block title %} User Page: Taskhub {% endblock %}
 
 {% block content %} 
 <!--CSS-->
@@ -63,23 +64,14 @@
             <div class="list-group">
                 <a class="list-group-item list-group-item-action active">User Settings</a>
                 <a href="/userPage" class="list-group-item list-group-item-action">Account</a>
-                <a href="/preferences" class="list-group-item list-group-item-action">Preferences</a>
                 <a href="/privacy" class="list-group-item list-group-item-action">Privacy</a>
             </div>
         </div>
         <div class="col-md-9">
             <header>
-                <div class="avatar-container">
+                <div class="avatar-container" data-toggle="modal" data-target="#avatarSelectModal">
                     <label for="avatar-input">
-                        {% if accountType == 'teacher' %}
-                            <img src="../static/teacherstar.png" alt="user" class="avatar" id="avatar-image">
-                        {% elif accountType == 'student' %}
-                            <img src="../static/studentstar.png" alt="user" class="avatar" id="avatar-image">
-                        {% elif accountType == 'parent' %}
-                            <img src="../static/parentIcon.png" alt="user" class="avatar" id="avatar-image">
-                        {% else %}
-                            <img src="../static/userstar.png" alt="user" class="avatar" id="avatar-image">
-                        {% endif %}
+                        <img src="{{ profilePicturePath }}" alt="user" class="avatar" id="avatar-image">
                     </label>
                 </div>
                 <h1>Hello, {{ username }}</h1>
@@ -106,6 +98,27 @@
                                 </label>
                                 <p class="description">A student account is for individuals enrolled in educational institutions.</p>
                             </div>
+                            <!-- Additional fields for Student -->
+                            <div id="studentFields" style="display: none;">
+                                <div class="form-group">
+                                    <label for="studentId">Student ID</label>
+                                    <input type="text" class="form-control" id="studentId" name="studentId">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gradeLevel">Grade Level</label>
+                                    <select class="form-control" id="gradeLevel" name="gradeLevel">
+                                        <option value="" disabled selected>Select grade level</option>
+                                        <option value="9th">9th Grade</option>
+                                        <option value="10th">10th Grade</option>
+                                        <option value="11th">11th Grade</option>
+                                        <option value="12th">12th Grade</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="courseEnrolled">Course Enrolled</label>
+                                    <input type="text" class="form-control" id="courseEnrolled" name="courseEnrolled">
+                                </div>
+                            </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="accountType" id="teacherRadio" value="teacher">
                                 <label class="form-check-label" for="teacherRadio">
@@ -113,12 +126,39 @@
                                 </label>
                                 <p class="description">A teacher account is for educators who manage classes and assignments.</p>
                             </div>
+
+                            <!-- Additional fields for Teacher -->
+                            <div id="teacherFields" style="display: none;">
+                                <div class="form-group">
+                                    <label for="teacherId">Teacher ID</label>
+                                    <input type="text" class="form-control" id="teacherId" name="teacherId">
+                                </div>
+                                <div class="form-group">
+                                    <label for="subjectTaught">Course of study</label>
+                                    <input type="text" class="form-control" id="subjectTaught" name="subjectTaught">
+                                </div>
+                            </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="accountType" id="parentRadio" value="parent">
                                 <label class="form-check-label" for="parentRadio">
                                 <b>Parent</b>
                                 </label>
                                 <p class="description">A parent account is for users who manage their children's day to day tasks as well as their own!</p>
+                            </div>
+
+                            <!-- Additional fields for Parent -->
+                            <div id="parentFields" style="display: none;">
+                                <div class="form-group">
+                                    <label for="childCount">Child Count</label>
+                                    <select class="form-control" id="childCount" name="childCount">
+                                        <option value="" disabled selected>How many kids do you have?</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="accountType" id="standardRadio" value="standard">
@@ -164,8 +204,40 @@
     </div>
 </div>
 
+<!-- Avatar selection modal -->
+<div class="modal fade" id="avatarSelectModal" tabindex="-1" role="dialog" aria-labelledby="avatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarModalLabel">Select Your Avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Avatar options -->
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <img src="../static/teacherstar.png" alt="teacher" class="avatar-select" data-avatar="../static/teacherstar.png" style="max-width: 100px;">
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <img src="../static/studentstar.png" alt="student" class="avatar-select" data-avatar="../static/studentstar.png" style="max-width: 100px;">
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <img src="../static/userstar.png" alt="default" class="avatar-select" data-avatar="../static/userstar.png" style="max-width: 100px;">
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <img src="../static/defaultProfilePicture.png" alt="default" class="avatar-select" data-avatar="../static/defaultProfilePicture.png" style="max-width: 100px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--- Account type popup script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
    $(document).ready(function() {
     $('#accountTypeModal').modal('show');
@@ -187,6 +259,61 @@
             }
         });
     });
+
+    // When an avatar is selected
+    $('.avatar-select').click(function () {
+        var selectedAvatar = $(this).data('avatar');
+        // Update the avatar image
+        $('#avatar-image').attr('src', selectedAvatar);
+        // Update the profilePicturePath in the database
+        $.ajax({
+            url: '/update_avatar',
+            type: 'POST',
+            data: { profilePicturePath: selectedAvatar },
+            success: function (response) {
+                // Handle success
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+                console.error(error);
+            }
+        });
+        // Close the modal
+        $('#avatarSelectModal').modal('hide');
+    });
 });
+
+// Function to show additional fields based on the selected account type
+document.addEventListener("DOMContentLoaded", function () {
+        var studentFields = document.getElementById("studentFields");
+        var teacherFields = document.getElementById("teacherFields");
+        var parentFields = document.getElementById("parentFields");
+        // Event listener for radio buttons
+        var radioButtons = document.getElementsByName("accountType");
+        for (var i = 0; i < radioButtons.length; i++) {
+            radioButtons[i].addEventListener("change", function () {
+                if (this.value === "student") {
+                    studentFields.style.display = "block";
+                    teacherFields.style.display = "none";
+                    parentFields.style.display = "none";
+                } 
+                else if (this.value === "teacher"){
+                    studentFields.style.display = "none";
+                    teacherFields.style.display = "block";
+                    parentFields.style.display = "none";
+                }
+                else if (this.value === "parent"){
+                    studentFields.style.display = "none";
+                    teacherFields.style.display = "none";
+                    parentFields.style.display = "block";
+                }
+                else {
+                    studentFields.style.display = "none";
+                    teacherFields.style.display = "none";
+                    parentFields.style.display = "none";
+                }
+            });
+        }
+    });
 </script>
 {% endblock %}

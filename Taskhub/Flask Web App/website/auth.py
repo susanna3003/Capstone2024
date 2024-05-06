@@ -70,6 +70,12 @@ def logout():
     session.pop('logged_in', None)  # Clear the session variable
     return redirect(url_for('auth.login'))
 
+#Welcome email function
+def sendWelcomeEmail(email, username):
+    msg = Message('Welcome to Taskhub!', sender='your_email@example.com', recipients=[email])
+    msg.html = render_template('sendWelcomeEmail.html', username=username, app_url='http://yourtaskhubapp.com')
+    mail.send(msg)
+
 #   SignUp page
 @auth.route('/signUp', methods=['GET', 'POST'])
 def sign_up():
@@ -115,6 +121,8 @@ def sign_up():
                 flash('Account created!', category='success')
                 session['logged_in'] = True
                 session['show_account_type_popup'] = True
+                #Send welcome email
+                sendWelcomeEmail(email, username)
                 conn.close()
                 return redirect(url_for("auth.userPage"))
     return render_template("signUp.html")

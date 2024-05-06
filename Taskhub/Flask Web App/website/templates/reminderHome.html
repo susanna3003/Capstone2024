@@ -123,18 +123,24 @@ input[type=submit]:hover
 }
 </style>
 
-<h1>{{ username }}'s Tasks</h1>
-{% if tasksExist == 1 %}
-  {% if taskCount == 1 %}
-    <h3>{{ taskCount }} current task.</h3>
-  {% elif taskCount > 1 %}
-    <h3>{{ taskCount }} current tasks.</h3>
-  {% elif taskCount == 0 %}
-    <h3>You do not have any current tasks.</h3>
+<h1>{{ username }}'s Reminders</h1>
+{% if remsExist == 1 %}
+  {% if remCount == 1 %}
+    <h3>{{ remCount }} current reminder.</h3>
+  {% elif remCount > 1 %}
+    <h3>{{ remCount }} current reminders.</h3>
+  {% elif remCount == 0 %}
+    <h3>You do not have any current reminders.</h3>
   {% endif %}
 {% endif %}
 
 <p align="right"><button id="createReminderButton" onclick="openModal()">Create Reminder</button></p>
+
+<div class="container">
+  <div class="row" id="cardContainer">
+    <!-- Cards will be dynamically added here -->
+  </div>
+</div>
 
 <div id="reminderCreateForm" class="popup">
       <form class="popup-content" id="myForm">
@@ -215,5 +221,30 @@ input[type=submit]:hover
 
     return true; // Allow form submission
   }
+</script>
+
+<!--- bootstrap cards -->
+<!--- bootstrap cards script -->
+<script>
+  fetch('/getReminders')
+      .then(response => response.json())
+      .then(rems => {
+          const cardContainer = document.getElementById('cardContainer');
+          rems.forEach(rem => {
+              const card = document.createElement('div');
+              card.classList.add('col-lg-4', 'col-md-6', 'mb-4');
+              card.innerHTML = `
+                  <div class="card">
+                      <div class="card-body">
+                          <h5 class="card-title">Name: ${rem.title}</h5>
+                          <p class="card-text">Description: ${rem.description}</p>
+                          <p class="card-text">Deadline: ${rem.start}</p>
+                          <a href="/calendar" class="btn btn-primary">View in Calendar</a>
+                      </div>
+                  </div>
+              `;
+              cardContainer.appendChild(card);
+          });
+      });
 </script>
 {% endblock %}

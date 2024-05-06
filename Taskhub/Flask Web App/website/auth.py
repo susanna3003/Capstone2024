@@ -482,6 +482,27 @@ def get_tasks():
         events.append(event)
     return jsonify(events)
 
+#   Retrieving tasks
+@auth.route('/getReminders')
+def get_reminders():
+    user_id = session.get('id')
+    conn = sqlite3.connect('taskDatabase.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM reminders WHERE userId = ?", (user_id,))
+    rems = cur.fetchall()
+    conn.close()
+    events = []
+    for rem in rems:
+        event = {
+            'id': rem[0],  # Task ID
+            'title': rem[2],  # Task name
+            'start': rem[4],  # Task deadline
+            'description': rem[5],  # Task description
+            'location': rem[7] # Task Location
+        }
+        events.append(event)
+    return jsonify(events)
+
 # Invitee Search
 @auth.route('/searchUsers/<search_query>', methods=['GET'])
 def search_users(search_query):

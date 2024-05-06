@@ -16,7 +16,7 @@ body
 
 #rcorners1 {
   border-radius: 25px;
-  background: #598269;
+  background: #2fa4e7;
   color: #fff;
   padding: 20px; 
   width: 200px;
@@ -29,7 +29,7 @@ body
   top: 500px;
   right: 300px;
   padding: 10px 20px;
-  background-color: #598269;
+  background-color: #2fa4e7;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -51,7 +51,7 @@ body
   border-radius: 4px;
   resize: vertical;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #c3d5c8;
+  background-color: #cfecff;
 }
 
 input[type=text], select, textarea 
@@ -71,7 +71,7 @@ label
 
 input[type=submit] 
 {
-  background-color: #04AA6D;
+  background-color: #2fa4e7;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -82,7 +82,7 @@ input[type=submit]
 
 input[type=submit]:hover 
 {
-  background-color: #45a049;
+  background-color: #2fa4e7;
 }
 
 .container 
@@ -137,6 +137,12 @@ input[type=submit]:hover
 {% endif %}
 
 <p align="right"><button id="createTaskButton" onclick="openModal()">Create Task</button></p>
+
+<div class="container">
+  <div class="row" id="cardContainer">
+    <!-- Cards will be dynamically added here -->
+  </div>
+</div>
 
 <div id="taskCreateForm" class="popup" onsubmit="return validateForm()">
     <form class="popup-content" id="newTaskForm" method="POST">
@@ -308,5 +314,30 @@ input[type=submit]:hover
         });
     });
   });
+</script>
+
+<!--- bootstrap cards script -->
+<script>
+  fetch('/getTasks')
+      .then(response => response.json())
+      .then(tasks => {
+          const cardContainer = document.getElementById('cardContainer');
+          tasks.forEach(task => {
+              const card = document.createElement('div');
+              card.classList.add('col-lg-4', 'col-md-6', 'mb-4');
+              card.innerHTML = `
+                  <div class="card">
+                      <div class="card-body">
+                          <h5 class="card-title">Name: ${task.title}</h5>
+                          <p class="card-text">Type: ${task.type}</p>
+                          <p class="card-text">Description: ${task.description}</p>
+                          <p class="card-text">Deadline: ${task.start}</p>
+                          <a href="/calendar" class="btn btn-primary">View in Calendar</a>
+                      </div>
+                  </div>
+              `;
+              cardContainer.appendChild(card);
+          });
+      });
 </script>
 {% endblock %}

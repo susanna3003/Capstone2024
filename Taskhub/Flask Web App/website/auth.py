@@ -132,16 +132,21 @@ def sign_up():
 def about():
     return render_template("about.html")
 
-#   user Page
+# user Page
 @auth.route('/userPage', methods=['GET','POST'])
 def userPage():
     user_id = session.get('id')
     conn = sqlite3.connect('userDatabase.db')
     cur = conn.cursor()
-    cur.execute("SELECT username FROM users WHERE id = ?", (user_id,))
+    cur.execute("SELECT username, profilePicturePath FROM users WHERE id = ?", (user_id,))
     user_data = cur.fetchone()
     conn.close()
-    username = user_data[0] if user_data else "User"
+    if user_data:
+        username, profilePicturePath = user_data
+    else:
+        username = "User"
+        profilePicturePath = "/static/defaultProfilePicture.png"  # Set a default profile picture path if none is found
+
     disableBtn = False
     show_account_type_popup = session.get('show_account_type_popup', False)
     
@@ -156,7 +161,7 @@ def userPage():
             submissionDate = datetime.strptime(submissionDate, '%Y-%m-%d')
             if submissionDate + timedelta(days=7) > datetime.now():
                 disableBtn = True
-    return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username = username, disableBtn=disableBtn)
+    return render_template("userPage.html", show_account_type_popup=show_account_type_popup, username=username, disableBtn=disableBtn, profilePicturePath=profilePicturePath)
 
 #   account type Route/account creaction
 @auth.route('/save_account_type', methods=['POST'])
@@ -195,6 +200,21 @@ def generate_unique_parent_id():
     # Generate a unique ID for the teacher
     parentId = str(uuid.uuid4())
     return parentId
+
+# Update avatar route
+@auth.route('/update_avatar', methods=['POST'])
+def update_avatar():
+    # Get the new profile picture path
+    new_avatar = request.form.get('profilePicturePath')
+    
+    # Update the profile picture path in the database
+    conn = sqlite3.connect('userDatabase.db')
+    cur = conn.cursor()
+    cur.execute("UPDATE users SET profilePicturePath = ? WHERE id = ?", (new_avatar, session['id']))
+    conn.commit()
+    conn.close()
+
+    return jsonify({'message': 'Avatar updated successfully'})
 
 #   Privacy Route
 @auth.route('/privacy')

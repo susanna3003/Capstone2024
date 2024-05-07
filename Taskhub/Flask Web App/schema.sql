@@ -9,7 +9,7 @@ CREATE TABLE users (
     username VARCHAR(12) NOT NULL,
     phoneNum VARCHAR(15) NOT NULL,
     accountType VARCHAR(15),
-    profilePicturePath VARCHAR(255) DEFAULT 'default_profile_picture.png'
+    profilePicturePath VARCHAR(255) DEFAULT 'defaultProfilePicture.png'
 );
 
 CREATE TABLE IF NOT EXISTS Teacher (

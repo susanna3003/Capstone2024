@@ -45,7 +45,7 @@
     border: 1px solid #ccc;
     border-radius: 5px; /* Soft corner */
     background-color: #f0f0f0; /* Button background color */
-    color: #333; /* Button text color */
+    color: #ffffff; /* Button text color */
     font-size: 16px; /* Adjust font size as needed */
     cursor: pointer;
     }
@@ -210,8 +210,8 @@ button {
                       <h2>Tasks & Reminders</h2>
                       <p>Access your tasks and reminders here.</p>
                       <div class="btn-container">
-                        <a href="{{ url_for('auth.taskHome') }}"><button id="accessTaskButton" onclick="openModal()">My Tasks</button></a>
-                        <a href="{{ url_for('auth.reminderHome') }}"><button id="accessReminderButton" onclick="openModal()">My Reminders</button></a>
+                        <a href="{{ url_for('auth.taskHome') }}"><button id="accessTaskButton" class="btn btn-primary btn-lg" onclick="openModal()"><strong>My Tasks</strong></button></a>
+                        <a href="{{ url_for('auth.reminderHome') }}"><button id="accessReminderButton" class="btn btn-primary btn-lg" onclick="openModal()"><strong>My Reminders</strong></button></a>
                       </div>
                     </div>
                   

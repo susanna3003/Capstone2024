@@ -56,6 +56,29 @@
     background-color: #e0e0e0; /* Change background color on hover */
     }
 
+    .user-dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
+}
+
+.user-info,
+.tasks-reminders,
+.recent-activity,
+.weekly-review {
+  background-color: #f2f2f2;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 </style>
 <div class = "container-fluid">
     <div class = "row"> 
@@ -176,29 +199,36 @@
                     </div>
                 </form>
                 {% endif %}
-                <section>
-                    <h2>User Information</h2>
-                    <p>This is where you can display information about the user.</p>
-                </section>
-                <section>
-                    <h2>Tasks & Reminders</h2>
-                    <p>Access your tasks and reminders here.</p>
-                    <div class="button-container">
+                <br>
+                <section class="user-dashboard">
+                    <div class="user-info">
+                      <h2>User Information</h2>
+                      <p>This is where you can display information about the user.</p>
+                    </div>
+                  
+                    <div class="tasks-reminders">
+                      <h2>Tasks & Reminders</h2>
+                      <p>Access your tasks and reminders here.</p>
+                      <div class="btn-container">
                         <a href="{{ url_for('auth.taskHome') }}"><button id="accessTaskButton" onclick="openModal()">My Tasks</button></a>
                         <a href="{{ url_for('auth.reminderHome') }}"><button id="accessReminderButton" onclick="openModal()">My Reminders</button></a>
+                      </div>
                     </div>
-                </section>
-                <section>
-                    <br>
-                    <h2>Recent Activity</h2>
-                    <p>Display recent activity or posts here.</p>
-                </section>
-                <section>
-                    <h2>Weekly Review</h2>
-                    <p>How was your day? Don't forget to fill out your weekly report!</p>
-                    <a href="{{ url_for('auth.weekReview') }}"><button id="weekly-review-btn" class="btn btn-primary btn-lg {% if disableBtn %}disabled-btn{% endif %}" {% if disableBtn %}disabled{% endif %}><strong>Weekly Review</strong></button></a>
-                    <a href="{{ url_for('auth.viewWeekReview') }}"><button class="btn btn-primary btn-lg"><strong>View Past Entries</strong></button></a>
-                </section>
+                  
+                    <div class="recent-activity">
+                      <h2>Recent Activity</h2>
+                      <p>Display recent activity or posts here.</p>
+                    </div>
+                  
+                    <div class="weekly-review">
+                      <h2>Weekly Review</h2>
+                      <p>How was your day? Don't forget to fill out your weekly report!</p>
+                      <div class="btn-container">
+                        <a href="{{ url_for('auth.weekReview') }}"><button id="weekly-review-btn" class="btn btn-primary btn-lg {% if disableBtn %}disabled-btn{% endif %}" {% if disableBtn %}disabled{% endif %}><strong>Weekly Review</strong></button></a>
+                        <a href="{{ url_for('auth.viewWeekReview') }}"><button class="btn btn-primary btn-lg"><strong>View Past Entries</strong></button></a>
+                      </div>
+                    </div>
+                  </section>
             </main>
         </div>
     </div>
